@@ -22,6 +22,7 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    xtable
+    xtable,
+    bookdown
 VignetteBuilder: knitr
 RdMacros: Rdpack
