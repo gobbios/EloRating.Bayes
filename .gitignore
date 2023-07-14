@@ -12,4 +12,3 @@ EloRating.Bayes.Rproj
 !NAMESPACE
 inst/doc
 inst/extdata/elo_withdates_old.stan
-man/
