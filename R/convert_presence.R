@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' data("advpres")
+#' data("advpres", package = "EloRating")
 #' presence <- advpres
 #' nrow(presence) # covering 33 days
 #' # 15 interactions:

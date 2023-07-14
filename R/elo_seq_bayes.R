@@ -18,6 +18,8 @@
 #'
 #' @importFrom cmdstanr cmdstan_model
 #' @importFrom Rdpack reprompt
+#' @importFrom EloRating randomsequence
+#'
 #' @return a list with two items, where the first (\code{$mod_res}) is the
 #'         the \code{cmdstanr} model object (see
 #'         \code{\link[cmdstanr]{CmdStanModel}}). The second list item

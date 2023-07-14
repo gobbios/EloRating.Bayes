@@ -132,7 +132,7 @@ We start with a small simulated example.
 
 ```{r}
 set.seed(123)
-x <- randomsequence(nID = 6, avgIA = 13, presence = c(0.7, 0.7))
+x <- EloRating::randomsequence(nID = 6, avgIA = 13, presence = c(0.7, 0.7))
 winner <- x$seqdat$winner
 loser <- x$seqdat$loser
 Date <- x$seqdat$Date
@@ -272,7 +272,7 @@ This section is just a place to collect illustrations of intuitions I have/had a
 
 ```{r}
 set.seed(1)
-x <- randomsequence(nID = 8, avgIA = 50)$seqdat
+x <- EloRating::randomsequence(nID = 8, avgIA = 50)$seqdat
 all_ids <- unique(c(x$winner, x$loser))
 
 # make one individual 'rare', i.e. with relatively few interactions
@@ -318,7 +318,7 @@ For the fun of it: let's compare the performance between the classic and the Bay
 ```{r sim_example, cache=TRUE}
 set.seed(123)
 # generate data
-x <- randomsequence(nID = 10, avgIA = 100, presence = c(0.4, 0.6))
+x <- EloRating::randomsequence(nID = 10, avgIA = 100, presence = c(0.4, 0.6))
 
 # classic elo
 celo <- elo.seq(winner = x$seqdat$winner, loser = x$seqdat$loser,

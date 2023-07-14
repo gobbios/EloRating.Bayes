@@ -24,7 +24,7 @@ a data frame with presence data
 convert date-based presence to interaction-based presence
 }
 \examples{
-data("advpres")
+data("advpres", package = "EloRating")
 presence <- advpres
 nrow(presence) # covering 33 days
 # 15 interactions:
