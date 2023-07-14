@@ -1,0 +1,27 @@
+Package: EloRating.Bayes
+Title: EloRating with Bayesian flavor
+Version: 0.10
+Date: 2023-07-10
+Authors@R: 
+    person(given = "Christof",
+           family = "Neumann",
+           role = c("aut", "cre"),
+           email = "christofneumann1@gmail.com")
+Description: Elo-rating for dyadic contest data using Bayesian estimation. The primary use case is the analysis of dominance interactions between animals.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Depends:
+    R (>= 4.0.0),
+    cmdstanr,
+    EloRating
+Imports:
+  posterior,
+  Rdpack
+Suggests: 
+    knitr,
+    rmarkdown,
+    xtable
+VignetteBuilder: knitr
+RdMacros: Rdpack

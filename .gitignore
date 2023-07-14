@@ -1,0 +1,15 @@
+*
+!/**/
+!*.*
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+EloRating.Bayes.Rproj
+!DESCRIPTION
+!NAMESPACE
+inst/doc
+inst/extdata/elo_withdates_old.stan
+man/
