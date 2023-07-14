@@ -52,3 +52,22 @@ date2index <- function(dateseq, targetdate) {
   unlist(xres)
 }
 
+
+
+#' find origin for as.Date
+#'
+#' @param xdate a \code{Date}
+#'
+#' @return character
+#' @export
+#'
+#' @examples
+#' find_origin(as.Date("2000-10-10"))
+find_origin <- function(xdate) {
+  aux1 <- as.numeric(xdate)
+  if (as.character(xdate) == as.character(as.Date(aux1, origin = "1970-01-01"))) return("1970-01-01")
+  if (as.character(xdate) == as.character(as.Date(aux1, origin = "1899-12-30"))) return("1899-12-30")
+  if (as.character(xdate) == as.character(as.Date(aux1, origin = "1899-12-31"))) return("1899-12-31")
+  if (as.character(xdate) == as.character(as.Date(aux1, origin = "1900-01-01"))) return("1900-01-01")
+  NULL
+}

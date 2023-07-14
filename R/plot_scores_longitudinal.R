@@ -35,7 +35,8 @@ plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, r
   }
 
   targetdate <- seq.Date(date_range[1], date_range[2], length.out = resol)
-  targetdate <- as.Date(as.integer(targetdate)) # needs to be integer otherwise R on Windows makes trouble
+  o <- find_origin(targetdate[1])
+  targetdate <- as.Date(as.integer(targetdate), origin = o) # needs to be integer otherwise R on Windows makes trouble
 
   pdata <- extract_elo_b(res = res, targetdate = targetdate, make_summary = FALSE, quiet = TRUE, keep_absent = FALSE)
   # lapply(pdata, ncol)

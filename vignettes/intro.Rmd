@@ -24,8 +24,13 @@ knitr::opts_chunk$set(
 
 ```{r setup, include=FALSE}
 library(EloRating.Bayes)
+library(EloRating)
+```
+
+```{r setup2, echo=FALSE, include=FALSE}
 library(xtable)
 ```
+
 
 # technicalities
 
@@ -282,8 +287,14 @@ xdata <- x[-excl, ]
 table(c(xdata$winner, xdata$loser))
 ```
 
+```{r, echo=FALSE}
+ncores <- 1
+if (parallel::detectCores() >= 4) ncores <- 4
+d <- prep_seq(xdata$winner, xdata$loser, xdata$Date)
+res <- elo_seq_bayes(standat = d, quiet = TRUE, parallel_chains = ncores)
+```
 
-```{r}
+```{r, eval=FALSE}
 d <- prep_seq(xdata$winner, xdata$loser, xdata$Date)
 res <- elo_seq_bayes(standat = d, quiet = TRUE)
 ```
@@ -321,14 +332,14 @@ set.seed(123)
 x <- EloRating::randomsequence(nID = 10, avgIA = 100, presence = c(0.4, 0.6))
 
 # classic elo
-celo <- elo.seq(winner = x$seqdat$winner, loser = x$seqdat$loser,
-                Date = x$seqdat$Date, presence = x$pres)
+celo <- EloRating::elo.seq(winner = x$seqdat$winner, loser = x$seqdat$loser,
+                           Date = x$seqdat$Date, presence = x$pres)
 
 # Bayesian elo
 standat <- prep_seq(winner = x$seqdat$winner, loser = x$seqdat$loser,
-                     Date = x$seqdat$Date, presence = x$pres)
-belo <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4, seed = 123,
-                      quiet = TRUE)
+                    Date = x$seqdat$Date, presence = x$pres)
+belo <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4, 
+                      seed = 123, quiet = TRUE)
 ```
 
 
@@ -336,14 +347,14 @@ belo <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4, seed 
 # belo final ratings
 brats1 <- extract_elo_b(belo, keep_absent = FALSE)
 # celo final ratings (order matched to order of brats)
-crats1 <- extract_elo(celo)[as.character(brats1$id)]
+crats1 <- EloRating::extract_elo(celo)[as.character(brats1$id)]
 
 # ratings halfway through the sequence
 hdate <- names(standat$idates)[length(standat$idates)/2]
 # belo half-way ratings
 brats2 <- extract_elo_b(belo, targetdate = hdate, keep_absent = FALSE)
 # celo half-way ratings (order matched to order of brats)
-crats2 <- extract_elo(celo, extractdate = hdate)[as.character(brats2$id)]
+crats2 <- EloRating::extract_elo(celo, extractdate = hdate)[as.character(brats2$id)]
 ```
 
 Here is the plot that compares ratings half-way through the interaction sequence and at the end of the sequence using the classic version and the Bayesian version.
