@@ -393,4 +393,70 @@ box()
 title(main = "classic")
 ```
 
+# steepness (longitudinal edition)
+
+This section (and the corresponding functions) should be considered experimental!
+
+The idea is to track potential changes in steepness in time directly from the model that estimates the ratings itself.
+What I mean by that can be demonstrated most easily with a simulated data set of an interaction sequence.
+We generate a data set where the dominance system initially has a steepness of 0.9.
+Then there is a time point from which on the system has only a steepness of 0.2 (imagine things like the onset of the birth season, or the rain season, some social perturbation (group split, infanticide, anything), or an experimental manipulation).
+This then is followed again by a period with higher steepness (0.6).
+So we have three periods, with different steepness.
+For the simulation we *know* the periods (in reality we won't, but for the sake of prooving the concept this is necessary).
+
+So let's simulate some data.
+We have 12 individuals and in each of the three periods, there are 500 interactions.
+We also extract the three dates at which we want to evaluate the steepness (which correspond to the last day in each period).
+
+```{r longi_steep_data, cache=TRUE}
+set.seed(123)
+idata <- generate_interactions(n_ind = 12, n_int = c(500, 500, 500), steep = c(0.9, 0.2, 0.6))
+dates <- c(idata$date[max(which(idata$set == 1))], 
+           idata$date[max(which(idata$set == 2))], 
+           idata$date[max(which(idata$set == 3))])
+```
+
+Then we fit the model.
+This generates a warning, which I ignore for now (I'm fairly sure that coding the individuals as numbers works correctly, but I still have to convince myself to 100% certainty about that).
+
+```{r longi_steep_model, cache=TRUE}
+res <- elo_seq_bayes(prep_seq(winner = idata$winner, loser = idata$loser, Date = idata$date), 
+                     parallel_chains = 4, quiet = TRUE)
+```
+
+Now we can plot the ratings over time.
+We add lines for the three dates.
+It seems fairly obvious from that figure that the spread of the ratings roughly reflects the three periods (more spread = steeper, less spread = less steep).
+
+```{r longisteepplotscores, cache=TRUE, fig.width=6, fig.height=3, out.width="70%", echo=2:50, fig.align='center', fig.cap="Individual scores over time when steepness changes."}
+par(family = "serif", mgp = c(1.5, 0.4, 0), mar = c(3, 2.6, 3, 1), tcl = -0.2, las = 1, cex.axis = 0.7)
+plot_scores_longitudinal(res, resol = 13)
+abline(v = dates)
+```
+
+Now we can extract the steepness at each of three time points numerically.
+This results in a matrix with three columns (one per date of interest) and the values are the posterior samples for the steepness at each time point.
+The column means should come close to values we set up in the data generation.
+
+```{r longi_steep_post_steeps}
+r <- longitudinal_steepness(res = res, dates = dates)
+round(colMeans(r), 2)
+```
+
+And finally, there is also a function that visualizes the three posteriors along a time axis.
+
+```{r longisteepplotsteepnessposteriors, cache=TRUE, fig.width=6, fig.height=3, out.width="70%", echo=2:50, fig.align='center', fig.cap="Steepness over time when steepness changes. Shown are the three posteriors for the three steepness corresponding to three dates."}
+par(family = "serif", mgp = c(1.5, 0.4, 0), mar = c(3, 2.6, 3, 1), tcl = -0.2, las = 1, cex.axis = 0.7)
+plot_steepness_longitudinal(res = res, dates = dates)
+```
+
+As said initially, this is still very experimental.
+In any case, in this example we recover the input steepness values for the three time periods fairly well.
+That said, this should be considered only a proof of concept.
+We had a lot of interaction data here (500 interactions per period) and there are no demographic fluctuations (there were the same 12 individuals from beginning to end).
+
+What would be interesting to know now (in addition to play with interaction numbers, migration events, and more periods) is how the approach compares to what would happen if we actually modeled the steepness values for each period separately (i.e., fit three steepness models with 500 interactions each).
+But I leave that for later.
+
 
