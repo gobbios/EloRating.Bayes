@@ -31,6 +31,12 @@ prep_seq <- function(winner, loser, Date, presence = NULL, draws = NULL) {
     warning("winner and/or loser vectors were detected as being numeric. This hasn't been tested, but should (should!) work. Consider providing these data as character or factor.")
   }
 
+  # generate warning if dates are not ordered
+  if (any(order(unique(Date)) != seq_along(unique(Date)))) {
+    warning("the interactions appear not to be ordered according to the information in 'Date'\nplease check that the order of interactions is correct",
+            call. = FALSE)
+  }
+
   if (is.null(draws)) {
     draws <- rep(0, length(winner))
   } else {
