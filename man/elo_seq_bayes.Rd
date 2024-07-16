@@ -31,14 +31,13 @@ is required for further processing).
 Elo-rating with Bayesian flavor
 }
 \examples{
-library(EloRating)
-x <- randomsequence(nID = 7, avgIA = 30)$seqdat
+x <- EloRating::randomsequence(nID = 7, avgIA = 30)$seqdat
 standat <- prep_seq(winner = x$winner, loser = x$loser, Date = x$Date)
 res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
 summary(res)
 
 # incorporating presence and ties
-x <- randomsequence(nID = 8, avgIA = 20, presence = c(0.2, 0.4), ties = 0.3)
+x <- EloRating::randomsequence(nID = 8, avgIA = 20, presence = c(0.2, 0.4), ties = 0.3)
 winner <- x$seqdat$winner
 loser <- x$seqdat$loser
 Date <- x$seqdat$Date

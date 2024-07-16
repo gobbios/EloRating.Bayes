@@ -1,7 +1,7 @@
 Package: EloRating.Bayes
 Title: EloRating with Bayesian flavor
-Version: 0.11
-Date: 2023-08-21
+Version: 0.12
+Date: 2023-10-25
 Authors@R: 
     person(given = "Christof",
            family = "Neumann",
@@ -11,7 +11,7 @@ Description: Elo-rating for dyadic contest data using Bayesian estimation. The p
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Depends:
     R (>= 4.0.0),
     cmdstanr
@@ -23,6 +23,8 @@ Suggests:
     knitr,
     rmarkdown,
     xtable,
-    bookdown
+    bookdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 RdMacros: Rdpack
+Config/testthat/edition: 3

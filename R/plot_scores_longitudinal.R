@@ -15,7 +15,7 @@
 #' @importFrom stats runif
 #'
 #' @examples
-#' x <- randomsequence(nID = 7, avgIA = 50, presence = c(0.4, 0.6))
+#' x <- EloRating::randomsequence(nID = 7, avgIA = 50, presence = c(0.4, 0.6))
 #' standat <- prep_seq(winner = x$seqdat$winner, loser = x$seqdat$loser,
 #'                     Date = x$seqdat$Date, presence = x$pres)
 #' res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4)
