@@ -167,7 +167,7 @@ res <- elo_seq_bayes(standat = standat, seed = 1)
 ```
 
 So we only need to pass the `standata`. 
-All other arguments this function relate to `$sample()` from `cmdstanr`, and are optional. 
+All other arguments in this function relate to `$sample()` from `cmdstanr`, and are optional. 
 For example, if you want use parallel processing, you can set `parallel_chains = 4`, or as in the case above, I used a fixed `seed`.
 You can also change the number of chains (default is 4), iterations (default is 1,000 each for warmup and sampling), etc (see the help file `elo_seq_bayes` for the most common ones).
 

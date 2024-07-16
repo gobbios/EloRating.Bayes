@@ -106,7 +106,7 @@ extract_elo_b <- function(res,
   presence <- res$standat$presence
 
   if (make_summary) {
-    out <- as.data.frame(gq$summary())
+    out <- as.data.frame(gq$summary(variables = "out_perdate"))
     out <- data.frame(id = out$variable, date = NA, present = FALSE, out[, -1], check.names = FALSE)
 
     vars <- out$id
@@ -131,7 +131,7 @@ extract_elo_b <- function(res,
   }
 
   if (!make_summary) {
-    draws <- as.matrix(gq$draws(format = "draws_matrix"))
+    draws <- as.matrix(gq$draws(variables = "out_perdate", format = "draws_matrix"))
     if (!is.null(sel_draws)) {
       draws <- draws[sample(nrow(draws), sel_draws), ]
     }

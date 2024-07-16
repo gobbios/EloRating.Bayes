@@ -104,7 +104,11 @@ model {
 generated quantities {
   // generate the actual ratings at the required dates
   matrix[n_extract, n_ind] out_perdate;
+  vector[n_int] gq_winprobs;
+  array[n_int] int gq_int_outcome;
 
+  gq_winprobs = win_probs_from_seq(EloStart, k, n_int, n_ind, winner_index, loser_index, presence, draws);
+  gq_int_outcome = bernoulli_rng(gq_winprobs);
   for (i in 1:n_extract) {
     out_perdate[i, ] = to_row_vector(ratings_up_to(EloStart, k, n_int, n_ind, winner_index, loser_index, targetdates[i], presence, draws));
   }
