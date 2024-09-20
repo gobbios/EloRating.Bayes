@@ -10,8 +10,13 @@
 #' @examples
 #' # 3 periods with varying steepness:
 #' x <- generate_interactions(n_ind = 12, n_int = c(200, 200, 200), steep = c(0.9, 0.2, 0.6))
-#' res <- elo_seq_bayes(prep_seq(winner = x$winner, loser = x$loser, Date = x$date), parallel_chains = 4)
-#' dates <- c(x$date[max(which(x$set == 1))], x$date[max(which(x$set == 2))], x$date[max(which(x$set == 3))])
+#' res <- elo_seq_bayes(prep_seq(winner = x$winner,
+#'                               loser = x$loser,
+#'                               Date = x$date),
+#'                      parallel_chains = 4)
+#' dates <- c(x$date[max(which(x$set == 1))],
+#'            x$date[max(which(x$set == 2))],
+#'            x$date[max(which(x$set == 3))])
 #' r <- longitudinal_steepness(res = res, dates = dates)
 #' colMeans(r)
 

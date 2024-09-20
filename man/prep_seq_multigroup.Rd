@@ -28,6 +28,10 @@ prep interaction data for multi-group Stan model
 }
 \examples{
 x <- group_mixture(n_ind = 20, n_mig = 4, n_grp = 3, n_int = 200)
-s <- EloRating.Bayes:::prep_seq_multigroup(winner = x$x$winner, loser = x$x$loser, group = x$x$group, dates = x$x$dates, presence = x$p)
+s <- EloRating.Bayes:::prep_seq_multigroup(winner = x$x$winner,
+                                           loser = x$x$loser,
+                                           group = x$x$group,
+                                           dates = x$x$dates,
+                                           presence = x$p)
 table(names(s$start_rating_index_indi))
 }

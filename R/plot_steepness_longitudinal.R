@@ -15,8 +15,12 @@
 #'
 #' @examples
 #' idata <- generate_interactions(n_ind = 8, n_int = c(300, 300), steep = c(0.9, 0.2))
-#' res <- elo_seq_bayes(prep_seq(winner = idata$winner, loser = idata$loser, Date = idata$date), parallel_chains = 4)
-#' dates <- c(idata$date[max(which(idata$set == 1))], idata$date[max(which(idata$set == 2))])
+#' res <- elo_seq_bayes(prep_seq(winner = idata$winner,
+#'                               loser = idata$loser,
+#'                               Date = idata$date),
+#'                      parallel_chains = 4)
+#' dates <- c(idata$date[max(which(idata$set == 1))],
+#'            idata$date[max(which(idata$set == 2))])
 #' plot_steepness_longitudinal(res = res, dates = dates)
 
 plot_steepness_longitudinal <- function(res, dates, vertical_stretch = 200) {
