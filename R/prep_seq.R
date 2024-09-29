@@ -9,11 +9,12 @@
 #'                 the approach in the classic EloRating package!!!)
 #' @param draws optional logical or integer (0/1) vector with information
 #'              about draws (undecided/ties)
+#' @param home_team,away_team,home_win for sports model
 #'
 #' @importFrom EloRating seqcheck
 #' @return a list
 #' @details see \code{\link{elo_seq_bayes}} for examples
-#' @export
+#' @aliases prep_seq_sport
 
 
 # x <- randomsequence(nID = 10, avgIA = 50, presence = c(0.2, 0.4))
@@ -22,6 +23,8 @@
 # Date <- x$seqdat$Date
 # presence <- x$pres
 
+
+#' @export
 prep_seq <- function(winner, loser, Date, presence = NULL, draws = NULL) {
   if (is.factor(winner)) winner <- as.character(winner)
   if (is.factor(loser)) loser <- as.character(loser)
@@ -77,3 +80,14 @@ prep_seq <- function(winner, loser, Date, presence = NULL, draws = NULL) {
   standat
 }
 
+#' @export
+prep_seq_sport <- function(winner, loser, Date, presence = NULL, draws = NULL,
+                           home_team = NULL, away_team = NULL, home_win = NULL) {
+
+  standat <- prep_seq(winner = winner, loser = loser, Date = Date, presence = presence, draws = draws)
+
+  standat$homewin <- home_win
+  standat$hometeam_index <- as.numeric(sapply(home_team, function(x)which(unique(c(names(standat$winner), names(standat$loser))) == x)))
+  standat$awayteam_index <- as.numeric(sapply(away_team, function(x)which(unique(c(names(standat$winner), names(standat$loser))) == x)))
+  standat
+}

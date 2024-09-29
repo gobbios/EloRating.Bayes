@@ -2,6 +2,7 @@
 % Please edit documentation in R/prep_seq.R
 \name{prep_seq}
 \alias{prep_seq}
+\alias{prep_seq_sport}
 \title{prepare interaction data}
 \usage{
 prep_seq(winner, loser, Date, presence = NULL, draws = NULL)
@@ -18,6 +19,8 @@ the approach in the classic EloRating package!!!)}
 
 \item{draws}{optional logical or integer (0/1) vector with information
 about draws (undecided/ties)}
+
+\item{home_team, away_team, home_win}{for sports model}
 }
 \value{
 a list
