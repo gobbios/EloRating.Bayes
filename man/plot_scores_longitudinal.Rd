@@ -4,7 +4,13 @@
 \alias{plot_scores_longitudinal}
 \title{plot ratings longitudinally (experimental!)}
 \usage{
-plot_scores_longitudinal(res, date_range = NULL, unc_width = 0.89, resol = 11)
+plot_scores_longitudinal(
+  res,
+  date_range = NULL,
+  unc_width = 0.89,
+  resol = 11,
+  plot_presence = NULL
+)
 }
 \arguments{
 \item{res}{result of \code{\link{elo_seq_bayes}}}
@@ -16,6 +22,8 @@ if \code{NULL}: the entire detected range of dates is used.}
 (default is 0.89).}
 
 \item{resol}{numeric, number of steps}
+
+\item{plot_presence}{optional presence matrix used for plotting (see \code{\link{sim_group_split}})}
 }
 \value{
 a plot

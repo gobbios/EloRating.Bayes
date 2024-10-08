@@ -7,3 +7,4 @@
 ^data-raw$
 README.Rmd
 README_files
+vignettes/intro_cache

@@ -7,6 +7,7 @@
 #' @param unc_width numeric between 0 and 1, width of uncertainty around median
 #'                  (default is 0.89).
 #' @param resol numeric, number of steps
+#' @param plot_presence optional presence matrix used for plotting (see \code{\link{sim_group_split}})
 #'
 #' @return a plot
 #' @export
@@ -21,7 +22,13 @@
 #' res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4)
 #' plot_scores_longitudinal(res, resol = 7)
 
-plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, resol = 11) {
+
+# res=r
+# date_range = NULL
+# unc_width = 0
+# resol = 6
+# plot_presence=x$p1
+plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, resol = 11, plot_presence = NULL) {
   if (is.null(date_range)) {
     date_range <- range(as.Date(names(res$standat$idates)))
   } else {
@@ -41,6 +48,13 @@ plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, r
   pdata <- extract_elo_b(res = res, targetdate = targetdate, make_summary = FALSE, quiet = TRUE, keep_absent = FALSE)
   # lapply(pdata, ncol)
   # range(unlist(lapply(pdata, range)))
+
+
+  if (!is.null(plot_presence)) {
+    di <- date2index(dateseq = as.Date(names(res$standat$idates)), targetdate = targetdate)
+    xplotpresence <- plot_presence[di, ]
+  }
+
 
   ids <- colnames(res$standat$presence)
 
@@ -64,19 +78,27 @@ plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, r
     aux$id <- i
 
     aux$stint <- 0
-
+    if (!is.null(plot_presence)) {
+      aux[xplotpresence[, i] == 0, 3] <- NA
+    }
     if (!is.na(aux[1, 3])) aux$stint[1] <- 1
-    i=2
-    for (i in 2:nrow(aux)) {
-      if (!is.na(aux[i - 1, 3]) & !is.na(aux[i, 3])) {
-        aux$stint[i] <- max(aux$stint)
+    auxrow=2
+    for (auxrow in 2:nrow(aux)) {
+      if (!is.na(aux[auxrow - 1, 3]) & !is.na(aux[auxrow, 3])) {
+        aux$stint[auxrow] <- max(aux$stint)
       }
-      if (is.na(aux[i - 1, 3]) & !is.na(aux[i, 3])) {
-        aux$stint[i] <- max(aux$stint) + 1
+      if (is.na(aux[auxrow - 1, 3]) & !is.na(aux[auxrow, 3])) {
+        aux$stint[auxrow] <- max(aux$stint) + 1
       }
 
     }
 
+    if (!is.null(plot_presence)) {
+      # aux[xplotpresence[, i] == 0, 1] <- NA
+      # aux[xplotpresence[, i] == 0, 2] <- NA
+      # aux[xplotpresence[, i] == 0, 3] <- NA
+      # aux <- aux[xplotpresence[, i] == 1, , drop = FALSE]
+    }
 
     pd[[length(pd) + 1]] <- aux
   }
