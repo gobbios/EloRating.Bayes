@@ -3,7 +3,7 @@
 #' @param model result from \code{\link{elo_seq_bayes}}
 #' @param i1,i2 two individuals for which to get the outcome
 #' @param threshold default is 0.6: how certain are we about the outcome reaching this level of confidence
-#'
+#' @importFrom graphics abline arrows
 #' @return a data frame and a plot
 #' @export
 #'

@@ -18,17 +18,37 @@ sim_group_split(
 \item{split_by_matriline}{\code{"hard"} or \code{"random"}}
 }
 \value{
-a list
+a list with interaction data and presence data for eventual group 1 and for eventual group 2.
+And a data frame with individual level characteristics \code{res$indi_data}
 }
 \description{
 group splits into two distinct subsets (groups) of individuals
 }
+\details{
+Here we simulate interactions from individuals that initially formed one group.
+Then the group splits.
+This split can happen either along matrilines, where matrilines determine
+the actual start ratings (all individuals of matriline 1 have higher ratings than
+individuals in matriline 2), or the split happens randomly irrespective of matriline.
+
+For the sake of the function the original group is called 0.
+}
 \examples{
 \dontrun{
 x <- sim_group_split(n_ind = 12, n_int = 800, split_by_matriline = "hard")
-standat <- prep_seq(winner = x$g1data$winner, loser = x$g1data$loser, Date = x$g1data$date)
-r <- elo_seq_bayes(standat, quiet = TRUE, parallel_chains = 4, iter_sampling = 200, iter_warmup = 200)
-plot_scores_longitudinal(r, plot_presence = x$p1, unc_width = 0.0)
+dat_g1<- x$g1data
+pres_g1 <- x$p1
+standat <- prep_seq(winner = dat_g1$winner, loser = dat_g1$loser, Date = dat_g1$date)
+r <- elo_seq_bayes(standat, quiet = TRUE, chains = 1, iter_sampling = 200, iter_warmup = 200)
+# overlay presence for plot only
+plot_scores_longitudinal(r, plot_presence = pres_g1, unc_width = 0.0)
+
+standat <- prep_seq(winner = dat_g1$winner, loser = dat_g1$loser,
+                    Date = dat_g1$date, presence = pres_g1)
+r <- elo_seq_bayes(standat, quiet = TRUE, chains = 1, iter_sampling = 200, iter_warmup = 200)
+# overlay presence for plot only
+plot_scores_longitudinal(r, plot_presence = pres_g1, unc_width = 0.0)
+
 }
 
 }

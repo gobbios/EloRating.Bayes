@@ -21,6 +21,15 @@
 #'                     Date = x$seqdat$Date, presence = x$pres)
 #' res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 4)
 #' plot_scores_longitudinal(res, resol = 7)
+#'
+#'
+#' x <- sim_group_split(n_ind = 11, n_int = 700, split_by_matriline = "hard")
+#' standat <- prep_seq(winner = x$g1data$winner, loser = x$g1data$loser, Date = x$g1data$date)
+#' r <- elo_seq_bayes(standat, quiet = TRUE, chains = 1, iter_sampling = 200, iter_warmup = 200)
+#' plot_scores_longitudinal(r, plot_presence = x$p1, unc_width = 0.0, resol = 9)
+#'
+
+
 
 
 # res=r

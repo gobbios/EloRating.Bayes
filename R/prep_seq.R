@@ -25,7 +25,12 @@
 
 
 #' @export
-prep_seq <- function(winner, loser, Date, presence = NULL, draws = NULL) {
+prep_seq <- function(winner,
+                     loser,
+                     Date,
+                     presence = NULL,
+                     draws = NULL) {
+
   if (is.factor(winner)) winner <- as.character(winner)
   if (is.factor(loser)) loser <- as.character(loser)
   if (is.numeric(winner) | is.numeric(loser)) {
@@ -80,6 +85,7 @@ prep_seq <- function(winner, loser, Date, presence = NULL, draws = NULL) {
   standat
 }
 
+#' @rdname prep_seq
 #' @export
 prep_seq_sport <- function(winner, loser, Date, presence = NULL, draws = NULL,
                            home_team = NULL, away_team = NULL, home_win = NULL) {

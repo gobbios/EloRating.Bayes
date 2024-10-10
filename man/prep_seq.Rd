@@ -6,6 +6,17 @@
 \title{prepare interaction data}
 \usage{
 prep_seq(winner, loser, Date, presence = NULL, draws = NULL)
+
+prep_seq_sport(
+  winner,
+  loser,
+  Date,
+  presence = NULL,
+  draws = NULL,
+  home_team = NULL,
+  away_team = NULL,
+  home_win = NULL
+)
 }
 \arguments{
 \item{winner}{character}
