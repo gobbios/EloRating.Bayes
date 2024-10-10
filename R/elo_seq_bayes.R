@@ -49,12 +49,15 @@
 elo_seq_bayes <- function(standat, quiet = FALSE, ...) {
   # path to model file
   f <- system.file("extdata/elo_withdates.stan", package = "EloRating.Bayes")
+  # path for including standalone functions
+  includepath <- normalizePath(file.path(system.file("extdata", package = "EloRating.Bayes"), "stan_functions"))
+
   # compile model file and sample
   if (quiet) {
-    x <- capture.output(mod <- suppressMessages(cmdstan_model(f, quiet = TRUE)))
+    x <- capture.output(mod <- suppressMessages(cmdstan_model(f, quiet = TRUE, include_paths = includepath)))
     x <- capture.output(res <- suppressMessages(mod$sample(data = standat, ...)))
   } else {
-    mod <- cmdstan_model(f, quiet = TRUE)
+    mod <- cmdstan_model(f, quiet = TRUE, include_paths = includepath,)
     res <- mod$sample(data = standat, ...)
   }
 
