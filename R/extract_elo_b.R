@@ -81,15 +81,20 @@ extract_elo_b <- function(res,
   tdates <- date2index(dateseq = as.Date(names(res$standat$idates)),
                        targetdate = as.Date(targetdate))
 
+  # path for including standalone functions
+  includepath <- normalizePath(file.path(system.file("extdata", package = "EloRating.Bayes"), "stan_functions"))
+
   if (quiet) {
     x <- capture.output(mod <- suppressMessages(cmdstan_model(system.file("extdata/elo_withdates.stan",
                                                          package = "EloRating.Bayes"),
-                                             quiet = TRUE))
+                                             quiet = TRUE,
+                                             include_path = includepath))
     )
   } else {
     mod <- cmdstan_model(system.file("extdata/elo_withdates.stan",
                                      package = "EloRating.Bayes"),
-                         quiet = TRUE)
+                         quiet = TRUE,
+                         include_path = includepath)
   }
   res$standat$targetdates <- tdates
   res$standat$n_extract <- length(tdates)
