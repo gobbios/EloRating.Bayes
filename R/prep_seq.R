@@ -9,6 +9,10 @@
 #'                 the approach in the classic EloRating package!!!)
 #' @param draws optional logical or integer (0/1) vector with information
 #'              about draws (undecided/ties)
+#' @param intensity optional character or factor describing type or intensity
+#'        for each interaction. Determines how many k values are estimated.
+#'        At its default (\code{NULL}), all interactions are considered of
+#'        the same type/intensity and one k value is estimated.
 #' @param home_team,away_team,home_win for sports model
 #'
 #' @importFrom EloRating seqcheck
@@ -29,7 +33,8 @@ prep_seq <- function(winner,
                      loser,
                      Date,
                      presence = NULL,
-                     draws = NULL) {
+                     draws = NULL,
+                     intensity = NULL) {
 
   if (is.factor(winner)) winner <- as.character(winner)
   if (is.factor(loser)) loser <- as.character(loser)
@@ -50,6 +55,18 @@ prep_seq <- function(winner,
   } else {
     draws <- as.integer(draws)
   }
+
+  if (is.null(intensity)) {
+    intensity <- rep("default", length(winner))
+  }
+  if (length(intensity) != length(winner)) {
+    stop("intensity needs to be the same length as winner",call. =  FALSE)
+  }
+
+  aux <- unique(as.character(intensity))
+  intensity_index <- as.numeric(sapply(intensity, function(x)which(aux == x)))
+  names(intensity_index) <- intensity
+  n_k <- length(aux)
 
   x <- seqcheck(winner, loser, Date)
 
@@ -75,9 +92,11 @@ prep_seq <- function(winner,
 
   standat <- list(n_ind = n_ind,
                   n_int = n_int,
+                  n_k = n_k,
                   winner_index = winner_index,
                   loser_index = loser_index,
                   draws = draws,
+                  intensity_index = intensity_index,
                   presence = presence,
                   idates = xdates,
                   targetdates = c(1, n_int),

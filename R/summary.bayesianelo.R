@@ -11,7 +11,10 @@
 summary.bayesianelo <- function(object, ...) {
   xtab <- table(c(names(object$standat$winner_index), names(object$standat$loser_index)))
   d <- object$mod_res$draws("k", format = "draws_matrix")
-  qs <- sprintf("%.3f", quantile(d, c(0.055, 0.5, 0.945)))
+  # qs <- sprintf("%.3f", quantile(d, c(0.055, 0.5, 0.945)))
+  qs <- t(apply(d, 2, function(x)sprintf("%.3f", quantile(x, c(0.055, 0.5, 0.945)))))
+  rownames(qs) <- names(sort(object$standat$intensity_index[!duplicated(object$standat$intensity_index)]))
+
   diagnostics <- object$mod_res$diagnostic_summary()
   if (all(diagnostics$num_divergent == 0) &
       all(diagnostics$num_max_treedepth == 0) &
@@ -34,7 +37,13 @@ summary.bayesianelo <- function(object, ...) {
       as.character(max(as.Date(names(object$standat$idates)))), "\n")
   # cat("startvalue:", "NA", "\n")
   # cat("uppon arrival treatment:", "NA", "\n")
-  cat("median k (89% CI): ", qs[2], " (", qs[1], " - ", qs[3], ")\n", sep = "")
+  # cat("median k (89% CI): ", qs[2], " (", qs[1], " - ", qs[3], ")\n", sep = "")
+  cat("median k (89% CI): \n")
+  for (i in seq_len(nrow(qs))) {
+    cat("  - ", rownames(qs)[i], ": ", sep = "")
+    cat(qs[i, 2], " (", qs[i, 1], " - ", qs[i, 3], ")\n", sep = "")
+  }
+
   cat("proportion of draws in the data set:", sprintf("%.2f", mean(object$standat$draws)), "\n")
   cat("number of post-warmup samples:", length(object$mod_res$metadata()$id) * object$mod_res$metadata()$iter_sampling, "\n")
   if (diags) cat(msg, "\n")

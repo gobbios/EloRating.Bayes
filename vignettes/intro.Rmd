@@ -55,6 +55,8 @@ To apply the Bayesian version of Elo-rating, we need these things in terms of da
 
 - optionally: a vector (either logical or 0/1) indicating whether an interaction ended in a draw
 
+- optionally: a vector (either character or factor) indicating the type (or intensity) of an interactions
+
 The three vectors for winner, loser, Date (and draws if supplied) must be of the same length.
 If you have used the classic `EloRating` package before: this works the same here.
 
@@ -62,7 +64,9 @@ The presence matrix represents for *each **interaction*** whether a given indivi
 So we require as many rows as interactions, and as many columns as there are individuals.
 And this is a major difference to `EloRating` where each row in the presence matrix corresponds to a calender date (regardless of how many interactions occurred that day).
 
-The following example illustrates this for data set in which there were *not* observations of interactions on each day between data set start and end (table \ref{tab:tab_seq_toy}). 
+The optional vectors for draws and interaction type also need to be of the same length (and of the same length as winner, loser and Date, obviously).
+
+The following example illustrates this for data set in which interactions were *not* observed on each day between data set start and end (table \ref{tab:tab_seq_toy}). 
 The correct version of a presence matrix for usage with `elo_seq_bayes()` is the one in table \ref{tab:tab_new}: each row corresponds to an interaction, i.e. it shows for each interaction the individuals that were present of that interaction's date.
 Table \ref{tab:tab_old} shows the version version which would be appropriate for `EloRating`.
 
@@ -145,7 +149,7 @@ presence <- x$pres
 ```
 
 
-The first step then is to convert the interaction (and presence) data into a format that can be passed to Stan (which is what runs under the hood).
+The first step is to convert the interaction (and presence) data into a format that can be passed to Stan (which is what runs under the hood).
 The function `prep_seq()` does that and requires the three mandatory vectors (winner, loser, date) and optionally the matrix with the presence data.
 If you don't supply a presence matrix, the function will assume that all individuals were present for all dates.
 

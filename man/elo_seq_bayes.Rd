@@ -47,6 +47,12 @@ standat <- prep_seq(winner = winner, loser = loser, Date = Date,
                     presence = presence, draws = draws)
 res <- elo_seq_bayes(standat = standat, refresh = 0, chains = 3, iter_sampling = 333)
 summary(res)
+
+x <- EloRating::randomsequence(nID = 8, avgIA = 20)$seqdat
+x$intensity <- sample(c("contact", "mild"), nrow(x), TRUE)
+standat <- prep_seq(winner = x$winner, loser = x$loser, Date = x$Date, intensity = x$intensity)
+res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
+summary(res)
 }
 \references{
 The underlying is Stan code is heavily based on this paper:

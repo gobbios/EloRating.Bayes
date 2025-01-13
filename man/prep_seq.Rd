@@ -5,7 +5,7 @@
 \alias{prep_seq_sport}
 \title{prepare interaction data}
 \usage{
-prep_seq(winner, loser, Date, presence = NULL, draws = NULL)
+prep_seq(winner, loser, Date, presence = NULL, draws = NULL, intensity = NULL)
 
 prep_seq_sport(
   winner,
@@ -30,6 +30,11 @@ the approach in the classic EloRating package!!!)}
 
 \item{draws}{optional logical or integer (0/1) vector with information
 about draws (undecided/ties)}
+
+\item{intensity}{optional character or factor describing type or intensity
+for each interaction. Determines how many k values are estimated.
+At its default (\code{NULL}), all interactions are considered of
+the same type/intensity and one k value is estimated.}
 
 \item{home_team, away_team, home_win}{for sports model}
 }
