@@ -150,7 +150,7 @@ presence <- x$pres
 
 
 The first step is to convert the interaction (and presence) data into a format that can be passed to Stan (which is what runs under the hood).
-The function `prep_seq()` does that and requires the three mandatory vectors (winner, loser, date) and optionally the matrix with the presence data.
+The function `prep_seq()` does that and requires the three mandatory vectors (winner, loser, date) and optionally the matrix with the presence data.\footnote{\textit{Optional} additional data that can be supplied reflects whether interactions ended in a draw or not, and to distinguish different interaction types, which allows estimating different $k$ values.}
 If you don't supply a presence matrix, the function will assume that all individuals were present for all dates.
 
 

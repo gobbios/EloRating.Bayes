@@ -58,17 +58,53 @@ remotes::install_github("gobbios/EloRating.Bayes", dependencies = TRUE, build_vi
 library(EloRating.Bayes)
 ```
 
+
 ```{r, eval=FALSE}
-res <- toydata()
-pp_check(res)
+# create a toy data set
+set.seed(123)
+x <- EloRating::randomsequence(nID = 6, avgIA = 10, presence = c(0.4, 0.4))
+winner <- x$seqdat$winner
+loser <- x$seqdat$loser
+Date <- x$seqdat$Date
+presence <- x$pres
+intensity <- sample(c("mild", "severe"), length(winner), TRUE)
+
+# prep data
+standat <- prep_seq(winner = winner, loser = loser, Date = Date, presence = presence, intensity = intensity)
+
+# fit 
+res <- elo_seq_bayes(standat = standat, quiet = FALSE, parallel_chains = 4, seed = 1)
 ```
 
-```{r pp_plot_ex01, echo=FALSE}
+A numeric summary.
+
+```{r, eval=TRUE, echo=2:2}
 res <- toydata()
+summary(res)
+```
+
+Example of posterior predictive check: proportion of won interactions per individual.
+
+```{r, eval=FALSE}
+pp_check(res, n_samples = 50)
+```
+
+```{r pp_plot_ex01, echo=FALSE, fig.width=7, fig.height=2.7, out.width="70%"}
 par(family = "serif", mgp = c(1.5, 0.4, 0), tcl = 0.2, mar = c(2.5, 2.5, 1.5, 0.5))
 set.seed(1)
-pp_check(res)
+pp_check(res, n_samples = 50)
 ```
 
+Plot posteriors of ratings. By default this is on the last day of data set (here one individual is absent that day, *o*, and hence missing from the plot).
+
+```{r, eval=FALSE}
+plot_scores(res)
+```
+
+```{r scores_01, echo=FALSE, fig.width=7, fig.height=2.7, out.width="70%"}
+par(family = "serif", mgp = c(1.2, 0.4, 0), tcl = 0.2, mar = c(2.9, 2.5, 1.5, 0.5))
+set.seed(1)
+plot_scores(res)
+```
 
 
