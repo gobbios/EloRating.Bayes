@@ -10,6 +10,8 @@
 #' @param shuffle_dates logical, create regular date sequence or shuffle dates,
 #'                      such that some dates are repeated and others don't
 #'                      occur
+#' @param use_letters use letters as id names (defaults to \code{FALSE},
+#'          generating integer numbers)
 #'
 #' @return a data frame with interaction sequence
 #' @export
@@ -23,7 +25,8 @@
 generate_interactions <- function(n_ind = 10,
                                   n_int = c(100, 100),
                                   steep = c(0.9, 0.2),
-                                  shuffle_dates = FALSE
+                                  shuffle_dates = FALSE,
+                                  use_letters = FALSE
                                   ) {
   dyads <- t(combn(seq_len(n_ind), 2))
   out <- matrix(ncol = 2, nrow = 0)
@@ -42,6 +45,12 @@ generate_interactions <- function(n_ind = 10,
   d <- seq.Date(from = as.Date("2000-01-01"), length.out = nrow(out), by = "day")
   if (shuffle_dates) {
     d <- sort(sample(d, nrow(out), replace = TRUE))
+  }
+
+  if (use_letters) {
+    idcodes <- sapply(seq_len(n_ind * 2), function(x) paste(sample(letters, 2), collapse = ""))
+    idcodes <- unique(idcodes[1:n_ind])
+    out <- cbind(idcodes[out[, 1]], idcodes[out[, 2]])
   }
 
   data.frame(winner = out[, 1], loser = out[, 2], date = d, set = rep(seq_along(n_int), times = n_int))

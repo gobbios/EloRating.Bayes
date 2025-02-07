@@ -2,6 +2,7 @@
 
 S3method(summary,bayesianelo)
 export(cat_foo)
+export(caterpillar_elo)
 export(convert_presence)
 export(date2index)
 export(elo_seq_bayes)

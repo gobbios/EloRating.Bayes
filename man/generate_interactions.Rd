@@ -8,7 +8,8 @@ generate_interactions(
   n_ind = 10,
   n_int = c(100, 100),
   steep = c(0.9, 0.2),
-  shuffle_dates = FALSE
+  shuffle_dates = FALSE,
+  use_letters = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ length as \code{n_int})}
 \item{shuffle_dates}{logical, create regular date sequence or shuffle dates,
 such that some dates are repeated and others don't
 occur}
+
+\item{use_letters}{use letters as id names (defaults to \code{FALSE},
+generating integer numbers)}
 }
 \value{
 a data frame with interaction sequence
