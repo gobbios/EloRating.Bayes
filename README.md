@@ -92,7 +92,19 @@ pp_check(res, n_samples = 50)
 
 <img src="README_files/figure-gfm/pp_plot_ex01-1.png" width="70%" />
 
-Plot posteriors of scores. Default is last day of data set (here one
-individual is absent that day, *o*, and hence missing from the plot).
+Plot posteriors of ratings. By default this is on the last day of data
+set (here one individual is absent that day, *o*, and hence missing from
+the plot).
+
+``` r
+plot_scores(res)
+```
 
 <img src="README_files/figure-gfm/scores_01-1.png" width="70%" />
+
+## Acknowledgments
+
+This project was funded by the German Research Foundation via an RTG
+grant:
+
+<img src="man/figures/RTG-LogoCYMK300.png" width="50%" style="display: block; margin: auto;" />

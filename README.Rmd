@@ -108,3 +108,10 @@ plot_scores(res)
 ```
 
 
+## Acknowledgments
+
+This project was funded by the German Research Foundation via an RTG grant:
+
+```{r, echo=FALSE, out.width="50%", fig.align='center'}
+knitr::include_graphics("man/figures/RTG-LogoCYMK300.png")
+```

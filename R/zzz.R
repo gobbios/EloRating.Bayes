@@ -26,3 +26,7 @@ toydata <- function() {
   res
 }
 
+#' helpers
+chaind_ids <- function(res) {
+  rep(res$metadata()$id, each = res$metadata()$iter_sampling)
+}
