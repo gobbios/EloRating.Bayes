@@ -34,10 +34,15 @@
 
 # res=r
 # date_range = NULL
-# unc_width = 0
-# resol = 6
-# plot_presence=x$p1
-plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, resol = 11, plot_presence = NULL) {
+# unc_width = 0.89
+# resol = 7
+# plot_presence=NULL
+plot_scores_longitudinal <- function(res,
+                                     date_range = NULL,
+                                     unc_width = 0.89,
+                                     resol = 11,
+                                     plot_presence = NULL
+                                     ) {
   if (is.null(date_range)) {
     date_range <- range(as.Date(names(res$standat$idates)))
   } else {
@@ -47,15 +52,20 @@ plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, r
   # check if resolution is too large
   idaterangemax <- as.numeric(diff(range(as.Date(names(res$standat$idates))))) + 1
   if (resol > idaterangemax) {
-    stop(paste0("resolution set too high (can't be larger than ", idaterangemax, ")"), call. = FALSE)
+    stop(paste0("resolution set too high (can't be larger than ",
+                idaterangemax,
+                ")"),
+         call. = FALSE)
   }
 
   targetdate <- seq.Date(date_range[1], date_range[2], length.out = resol)
   o <- find_origin(targetdate[1])
   targetdate <- as.Date(as.integer(targetdate), origin = o) # needs to be integer otherwise R on Windows makes trouble
 
-  pdata <- extract_elo_b(res = res, targetdate = targetdate, make_summary = FALSE, quiet = TRUE, keep_absent = FALSE)
+  pdata <- extract_elo_b(res = res, targetdate = targetdate, make_summary = FALSE,
+                         quiet = TRUE, keep_absent = FALSE, point_presence = FALSE)
   # lapply(pdata, ncol)
+  # lapply(pdata, head)
   # range(unlist(lapply(pdata, range)))
 
 
@@ -71,10 +81,11 @@ plot_scores_longitudinal <- function(res, date_range = NULL, unc_width = 0.89, r
   # prepare plotting data
   pd <- list()
 
-  i=ids[1]
+  i=ids[20]
   for (i in ids) {
     aux <- lapply(pdata, function(x) {
       if (i %in% colnames(x)) {
+        if (all(is.na(x[, i]))) return(rep(NA, 3))
         quantile(x[, i], probs = c((1 - unc_width)/2, 0.5, 1 - (1 - unc_width)/2))
       } else {
         rep(NA, 3)

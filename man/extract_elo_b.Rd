@@ -10,7 +10,8 @@ extract_elo_b(
   make_summary = TRUE,
   quiet = TRUE,
   sel_draws = NULL,
-  keep_absent = TRUE
+  keep_absent = TRUE,
+  point_presence = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,13 @@ This argument is only meaningful when
 are requested.}
 
 \item{keep_absent}{logical with default \code{TRUE}. See details section.}
+
+\item{point_presence}{logical with default \code{TRUE}: use presence on
+the exact \code{targetdate}. If \code{FALSE}: consider animals
+present if they were present on \emph{any} day between the
+\code{targetdate} and the previous data (determined by
+\code{resol}). This only has effects if \code{targetdate}
+is a vector with more than one entry.}
 }
 \value{
 if \code{make_summary=TRUE}: a data frame; otherwise a list of
@@ -54,7 +62,7 @@ This is only relevant if
 presence data was supplied to \code{\link{prep_seq}} in the first place.
 If \code{keep_absent = FALSE}, absent individuals are entirely removed
 from the output. If \code{keep_absent = TRUE}, these individuals will
-be present in the output, but all their values will set to \code{NA}.
+be present in the output, but all their values will be set to \code{NA}.
 }
 \examples{
 library(EloRating)

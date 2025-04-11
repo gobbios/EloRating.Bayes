@@ -18,6 +18,12 @@
 #'                  \code{make_summary = FALSE}, i.e. when full posteriors
 #'                  are requested.
 #' @param keep_absent logical with default \code{TRUE}. See details section.
+#' @param point_presence logical with default \code{TRUE}: use presence on
+#'          the exact \code{targetdate}. If \code{FALSE}: consider animals
+#'          present if they were present on \emph{any} day between the
+#'          \code{targetdate} and the previous data (determined by
+#'          \code{resol}). This only has effects if \code{targetdate}
+#'          is a vector with more than one entry.
 #'
 #' @details
 #' \code{keep_absent} is important for how individuals are treated that were
@@ -26,7 +32,7 @@
 #'   presence data was supplied to \code{\link{prep_seq}} in the first place.
 #'   If \code{keep_absent = FALSE}, absent individuals are entirely removed
 #'   from the output. If \code{keep_absent = TRUE}, these individuals will
-#'   be present in the output, but all their values will set to \code{NA}.
+#'   be present in the output, but all their values will be set to \code{NA}.
 #'
 #' @return if \code{make_summary=TRUE}: a data frame; otherwise a list of
 #'         matrices in which each matrix represent individuals in columns and
@@ -69,7 +75,9 @@ extract_elo_b <- function(res,
                           make_summary = TRUE,
                           quiet = TRUE,
                           sel_draws = NULL,
-                          keep_absent = TRUE) {
+                          keep_absent = TRUE,
+                          point_presence = TRUE
+                          ) {
 
   if (is.null(targetdate)) {
     targetdate <- max(as.Date(names(res$standat$idates)))
@@ -123,7 +131,20 @@ extract_elo_b <- function(res,
     out$date <- xdates[vars[, 1]]
 
     # presence[tdates, , drop = FALSE]
-    out$present <- as.logical(presence[tdates, , drop = FALSE])
+    smallpmat <- presence[tdates, , drop = FALSE]
+    if (!point_presence && length(tdates) >= 2) {
+      for (i in 2:length(tdates)) {
+        smallpmat[i, ] <- as.numeric(colSums(presence[tdates[i] : tdates[i - 1], ]) > 0)
+      }
+
+    }
+    # if (any(colSums(smallpmat) == 0)) {
+    #   warning("there are individuals in the data set that were never present on\n",
+    #           "any of the targetdates.\n")
+    # }
+    out$present <- as.logical(smallpmat)
+
+
     if (!keep_absent) {
       out <- out[out$present, ]
       rownames(out) <- NULL
@@ -154,19 +175,32 @@ extract_elo_b <- function(res,
 
     out <- lapply(seq_along(tdates), function(x) {
       aux <- draws[, seq(x, ncol(draws), by = length(tdates))]
-      aux[, which(presence[tdates[x], ] == 0)] <- NA
+      if (length(targetdate) >= 2 && !point_presence && x >= 2) {
+        # aux[,"KirikuSouth"]
+        # smallpmat[i, ] <- as.numeric(colSums(presence[tdates[i] : tdates[i - 1], ]) > 0)
+        aux[, which(as.numeric(colSums(presence[tdates[x] : tdates[x - 1], ]) > 0) == 0)] <- NA
+      } else {
+        aux[, which(presence[tdates[x], ] == 0)] <- NA
+      }
       aux
     })
+
     out <- lapply(out, function(x) {
       aux <- matrix(x, ncol = length(ids))
       colnames(aux) <- ids
       aux
     })
-
+    # lapply(out, head)
     if (!keep_absent) {
       i=1
       for (i in seq_along(tdates)) {
-        toremove <- which(presence[tdates[i], ] == 0)
+        toremove <- c()
+        if (length(targetdate) >= 2 && !point_presence && i >= 2) {
+
+        } else {
+          toremove <- which(presence[tdates[i], ] == 0)
+        }
+
         if (length(toremove) > 0) {
           out[[i]] <- out[[i]][, -c(toremove)]
         }
