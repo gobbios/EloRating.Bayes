@@ -16,6 +16,12 @@ data {
   matrix[n_int, n_ind] presence; // presence matrix
   int<lower=1> n_extract; // extraction points
   array[n_extract] int<lower=1> targetdates; // index positions for extraction
+
+  // conditional estimation of SD of start values
+  int<lower = 0, upper = 1> startspread_fixed; // toggle estimation of start SD
+  // startspread_val is size 0 if startspread_fixed is FALSE/0
+  // otherwise, we hand a value over in the data list
+  array[startspread_fixed ? 1 : 0] real<lower=0> startspread_val;
 }
 
 transformed data {
@@ -30,13 +36,27 @@ parameters {
   vector[n_ind] EloStart;
   // real<lower=0.0> k;
   vector<lower=0>[n_k] k;
+  // startspread_param is size 0 if startspread_fixed is TRUE/1
+  array[startspread_fixed ? 0 : 1] real<lower=0> startspread_param;
+}
+
+transformed parameters {
+  // either use data value or estimate
+  real<lower=0> startspread;
+  if (startspread_fixed) {
+    startspread = startspread_val[1];
+  } else {
+    startspread = startspread_param[1];
+  }
 }
 
 model {
   // elo part
   k ~ exponential(2);
-  EloStart ~ normal(0, 1);
-
+  EloStart ~ normal(0, startspread);
+  if (startspread_fixed) {
+    startspread ~ exponential(1);
+  }
   y ~ bernoulli(win_probs_presence_draws(EloStart, k, n_int, n_ind, winner_index, loser_index, presence, draws, intensity_index));
 }
 

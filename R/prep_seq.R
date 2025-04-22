@@ -2,17 +2,19 @@
 #'
 #' then to be used with \code{\link{elo_seq_bayes}}
 #'
-#' @param winner character
-#' @param loser character
-#' @param Date Date
+#' @param winner,loser character vector with ids of winner and loser individuals
+#' @param Date Date or character vector with dates (\code{"YYYY-MM-DD"})
 #' @param presence presence (one line per interaction, which is different from
 #'                 the approach in the classic EloRating package!!!)
 #' @param draws optional logical or integer (0/1) vector with information
 #'              about draws (undecided/ties)
 #' @param intensity optional character or factor describing type or intensity
-#'        for each interaction. Determines how many k values are estimated.
-#'        At its default (\code{NULL}), all interactions are considered of
-#'        the same type/intensity and one k value is estimated.
+#'          for each interaction. Determines how many k values are estimated.
+#'          At its default (\code{NULL}), all interactions are considered of
+#'          the same type/intensity and one k value is estimated.
+#' @param estimate_startspread logical, default is \code{FALSE}. Should the SD
+#'          of the start ratings be estimated. At its default, the SD is set to
+#'          1. When the SD is estimated, its prior is \code{exponential(1);}.
 #' @param home_team,away_team,home_win for sports model
 #'
 #' @importFrom EloRating seqcheck
@@ -34,19 +36,25 @@ prep_seq <- function(winner,
                      Date,
                      presence = NULL,
                      draws = NULL,
-                     intensity = NULL) {
+                     intensity = NULL,
+                     estimate_startspread = FALSE
+                     ) {
 
   if (is.factor(winner)) winner <- as.character(winner)
   if (is.factor(loser)) loser <- as.character(loser)
   if (is.numeric(winner) | is.numeric(loser)) {
     winner <- as.character(winner)
     loser <- as.character(loser)
-    warning("winner and/or loser vectors were detected as being numeric. This hasn't been tested, but should (should!) work. Consider providing these data as character or factor.")
+    warning("winner and/or loser vectors were detected as being numeric. ",
+            "This hasn't been tested, but should (should!) work. ",
+            "Consider providing these data as character or factor.")
   }
 
   # generate warning if dates are not ordered
   if (any(order(unique(Date)) != seq_along(unique(Date)))) {
-    warning("the interactions appear not to be ordered according to the information in 'Date'\nplease check that the order of interactions is correct",
+    warning("the interactions appear not to be ordered according to the ",
+            "information in 'Date'\n",
+            "please check that the order of interactions is correct",
             call. = FALSE)
   }
 
@@ -100,7 +108,16 @@ prep_seq <- function(winner,
                   presence = presence,
                   idates = xdates,
                   targetdates = c(1, n_int),
-                  n_extract = 2)
+                  n_extract = 2,
+                  startspread_fixed = 1,
+                  startspread_val = 1
+                  )
+
+  if (estimate_startspread) {
+    standat$startspread_val <- numeric(0)
+    standat$startspread_fixed <- 0
+  }
+
   standat
 }
 

@@ -12,8 +12,14 @@ summary.bayesianelo <- function(object, ...) {
   xtab <- table(c(names(object$standat$winner_index), names(object$standat$loser_index)))
   d <- object$mod_res$draws("k", format = "draws_matrix")
   # qs <- sprintf("%.3f", quantile(d, c(0.055, 0.5, 0.945)))
-  qs <- t(apply(d, 2, function(x)sprintf("%.3f", quantile(x, c(0.055, 0.5, 0.945)))))
+  qs <- t(apply(d, 2, function(x)sprintf("%.2f", quantile(x, c(0.055, 0.5, 0.945)))))
   rownames(qs) <- names(sort(object$standat$intensity_index[!duplicated(object$standat$intensity_index)]))
+
+  spreaddata <- NULL
+  if (object$standat$startspread_fixed == 0) {
+    spreaddata <- object$mod_res$draws("startspread", format = "draws_matrix")
+    spreaddata <- t(apply(spreaddata, 2, function(x)sprintf("%.2f", quantile(x, c(0.055, 0.5, 0.945)))))
+  }
 
   diagnostics <- object$mod_res$diagnostic_summary()
   if (all(diagnostics$num_divergent == 0) &
@@ -42,6 +48,13 @@ summary.bayesianelo <- function(object, ...) {
   for (i in seq_len(nrow(qs))) {
     cat("  - ", rownames(qs)[i], ": ", sep = "")
     cat(qs[i, 2], " (", qs[i, 1], " - ", qs[i, 3], ")\n", sep = "")
+  }
+
+  if (is.null(spreaddata)) {
+    cat("SD for start values was fixed at 1 \n")
+  } else {
+    cat("median SD for start values (89% CI): \n")
+    cat(spreaddata[1, 2], " (", spreaddata[1, 1], " - ", spreaddata[1, 3], ")\n", sep = "")
   }
 
   cat("proportion of draws in the data set:", sprintf("%.2f", mean(object$standat$draws)), "\n")
