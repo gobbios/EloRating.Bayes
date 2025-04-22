@@ -37,20 +37,24 @@ res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
 summary(res)
 
 # incorporating presence and ties
-x <- EloRating::randomsequence(nID = 8, avgIA = 20, presence = c(0.2, 0.4), ties = 0.3)
+x <- EloRating::randomsequence(nID = 8, avgIA = 20,
+                               presence = c(0.2, 0.4), ties = 0.3)
 winner <- x$seqdat$winner
 loser <- x$seqdat$loser
 Date <- x$seqdat$Date
 presence <- x$pres
 draws <- x$seqdat$Draw
 standat <- prep_seq(winner = winner, loser = loser, Date = Date,
-                    presence = presence, draws = draws)
-res <- elo_seq_bayes(standat = standat, refresh = 0, chains = 3, iter_sampling = 333)
+                    presence = presence, draws = draws,
+                    estimate_startspread = TRUE)
+res <- elo_seq_bayes(standat = standat, refresh = 0, chains = 3,
+                     iter_sampling = 333)
 summary(res)
 
 x <- EloRating::randomsequence(nID = 8, avgIA = 20)$seqdat
 x$intensity <- sample(c("contact", "mild"), nrow(x), TRUE)
-standat <- prep_seq(winner = x$winner, loser = x$loser, Date = x$Date, intensity = x$intensity)
+standat <- prep_seq(winner = x$winner, loser = x$loser, Date = x$Date,
+                    intensity = x$intensity)
 res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
 summary(res)
 }

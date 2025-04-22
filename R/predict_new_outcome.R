@@ -32,10 +32,12 @@ predict_new_outcome <- function(model, i1, i2, threshold = 0.8) {
   # plot
   d <- density(p)
   ymax <- max(d$y)
-  plot(0, 0, "n", xlim = c(0, 1), xaxs = "i", ylim = c(0, ymax * 1.1), yaxs = "i", axes = FALSE, ann = FALSE)
+  plot(0, 0, "n", xlim = c(0, 1), xaxs = "i", ylim = c(0, ymax * 1.1),
+       yaxs = "i", axes = FALSE, ann = FALSE)
   polygon(d, col = "#009634")
   axis(1, at = c(0:4)/4, labels = c(1, 0.75, 0.5, 0.75, 1))
-  arrows(x0 = 0.25, y0 = ymax * 1.05, x1 = 0.75, y1 = ymax * 1.05, code = 3)
+  arrows(x0 = 0.25, y0 = ymax * 1.05, x1 = 0.75, y1 = ymax * 1.05,
+         code = 3, length = 0.1)
   text(0.15, ymax * 1.05, paste(i2, "wins"))
   text(0.85, ymax * 1.05, paste(i1, "wins"))
   abline(v = 0.5, lty = 2)

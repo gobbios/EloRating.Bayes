@@ -7,6 +7,8 @@
 #' @param include_k plot k parameter first (default is \code{TRUE})
 #' @param mfrow layout of plot (default is \code{c(2, 2)})
 #'
+#' @importFrom graphics legend par
+#'
 #' @returns a plot
 #' @export
 #'
@@ -69,5 +71,3 @@ caterpillar_elo <- function(res, id = NULL, include_k = TRUE, mfrow = c(2, 2)) {
 
   par(opar)
 }
-
-

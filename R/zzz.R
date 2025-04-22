@@ -27,6 +27,7 @@ toydata <- function() {
 }
 
 #' helpers
+#' @param res a cmdstan model environment
 chaind_ids <- function(res) {
   rep(res$metadata()$id, each = res$metadata()$iter_sampling)
 }

@@ -9,3 +9,4 @@ README.Rmd
 README_files
 vignettes/intro_cache
 !inst/extdata/elo_withdates.stan
+dump/

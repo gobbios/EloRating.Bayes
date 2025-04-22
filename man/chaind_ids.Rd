@@ -6,6 +6,9 @@
 \usage{
 chaind_ids(res)
 }
+\arguments{
+\item{res}{a cmdstan model environment}
+}
 \description{
 helpers
 }
