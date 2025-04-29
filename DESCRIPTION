@@ -1,6 +1,6 @@
 Package: EloRating.Bayes
 Title: EloRating with Bayesian flavor
-Version: 0.22.0
+Version: 0.22.1
 Date: 2025-04-29
 Authors@R: 
     person(given = "Christof",

@@ -49,18 +49,18 @@ caterpillar_elo <- function(res, id = NULL, include_k = TRUE, mfrow = c(2, 2)) {
   cols <- hcl.colors(n = nchains)
 
   if (include_k) {
-    plot(0, 0, ylim = range(kpost), xlim = c(0, niter), type = "n")
+    plot(0, 0, ylim = range(kpost), xlim = c(0, niter), type = "n", xlab = "", ylab = "")
     for (i in seq_len(nchains)) {
       x <- seq_len(niter)
       y <- kpost[cids == i]
       points(x, y, type = "l", lwd = 0.5, col = cols[i])
     }
-    legend("topright", legend = "k", bg = "white", bty = "n", text.font = 2)
+    legend("topright", legend = "k value", bg = "white", bty = "n", text.font = 2)
   }
 
   for (xi in seq_len(nplots - include_k)) {
     zz <- pdata[, ids[xi]]
-    plot(0, 0, ylim = range(zz), xlim = c(0, niter), type = "n")
+    plot(0, 0, ylim = range(zz), xlim = c(0, niter), type = "n", xlab = "", ylab = "")
     for (i in seq_len(nchains)) {
       x <- seq_len(niter)
       y <- zz[cids == i]

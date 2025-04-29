@@ -118,7 +118,8 @@ So here, let's simulate data with known spread of start ratings and then compare
 
 ```{r estimate_sds, include=TRUE, echo=TRUE}
 set.seed(123)
-x <- principled_interactions(n_ind = 12, n_int = 100, startspread = 3)
+r <- make_rating_grid(n_ind = 12, start_sd = 3)
+x <- principled_interactions(rating_grid = r, n_int = 100)
 
 # model 1: estimate with spread
 d1 <- prep_seq(winner = x$idata$winner, loser = x$idata$loser, 
@@ -133,15 +134,15 @@ res2 <- elo_seq_bayes(d2, parallel_chains = 4, seed = 47, quiet = TRUE)
 summary2 <- extract_elo_b(res2, targetdate = 0)
 ```
 
+
 ```{r estimate_sds_plot, echo=FALSE, echo=2:20, fig.width=8, fig.height=2.6, out.width="70%"}
 par(mfrow = c(1, 2), family = "serif", mgp = c(1.5, 0.4, 0), tcl = 0.2, mar = c(2.5, 2.5, 1.5, 0.5))
-
-plot(x$startratings[summary1$id], summary1$median, asp = 1,
+plot(x$rating_grid[1, summary1$id], summary1$median, asp = 1,
      xlab = "true start ratings", ylab = "estimated start ratings")
 abline(0, 1, lty = 2)
 mtext("estimated SD", line = -1)
 
-plot(x$startratings[summary2$id], summary2$median, asp = 1,
+plot(x$rating_grid[1, summary2$id], summary2$median, asp = 1,
      xlab = "true start ratings", ylab = "estimated start ratings")
 abline(0, 1, lty = 2)
 mtext("fixed SD", line = -1)
@@ -149,7 +150,7 @@ mtext("fixed SD", line = -1)
 
 
 In both models there a close correlation between true and estimated start ratings. 
-In the model that estimates the start rating SD though, the recovered start values align with the true values fairly well in an absolute sense.
+In the model that estimates the start rating SD though, the recovered start values align with the true values fairly well in an absolute sense (but far from perfect).
 The model that assumes a fixed SD for the start ratings doesn't recover the true start ratings in an absolute sense.
 So that looks like a good start. 
 TBC.

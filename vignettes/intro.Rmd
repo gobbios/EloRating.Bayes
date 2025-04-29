@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(digits = 2)
 ```
 
 ```{r setup, include=FALSE}
@@ -173,7 +174,7 @@ res <- elo_seq_bayes(standat = standat, seed = 1)
 So we only need to pass the `standata`. 
 All other arguments in this function relate to `$sample()` from `cmdstanr`, and are optional. 
 For example, if you want use parallel processing, you can set `parallel_chains = 4`, or as in the case above, I used a fixed `seed`.
-You can also change the number of chains (default is 4), iterations (default is 1,000 each for warmup and sampling), etc (see the help file `elo_seq_bayes` for the most common ones).
+You can also change the number of chains (default is 4), iterations (default is 1,000 each for warm-up and sampling), etc (see the help file `elo_seq_bayes` for the most common ones).
 
 That's it.
 Now, we can inspect the results.
@@ -407,7 +408,7 @@ We generate a data set where the dominance system initially has a steepness of 0
 Then there is a time point from which on the system has only a steepness of 0.2 (imagine things like the onset of the birth season, or the rain season, some social perturbation (group split, infanticide, anything), or an experimental manipulation).
 This then is followed again by a period with higher steepness (0.6).
 So we have three periods, with different steepness.
-For the simulation we *know* the periods (in reality we won't, but for the sake of prooving the concept this is necessary).
+For the simulation we *know* the periods (in reality we won't, but for the sake of proving the concept this is necessary).
 
 So let's simulate some data.
 We have 12 individuals and in each of the three periods, there are 500 interactions.
@@ -462,5 +463,61 @@ We had a lot of interaction data here (500 interactions per period) and there ar
 
 What would be interesting to know now (in addition to play with interaction numbers, migration events, and more periods) is how the approach compares to what would happen if we actually modeled the steepness values for each period separately (i.e., fit three steepness models with 500 interactions each).
 But I leave that for later.
+
+# estimating SD of start ratings
+
+Recently, I've put back the possibility to estimate the spread of start ratings. 
+Alongside this option I created a first version of a function for simulating interaction outcomes that actually starts with creating start ratings.
+Incidentally, this function has an argument to set the spread of the start ratings.
+And we can also include 'rank changes', i.e. at certain time points, an individual gets a new true rating (can either be higher or lower than before).
+
+
+```{r principilludrifts, fig.width=6, fig.height=3.4, out.width="80%", echo=2:50, fig.align='center', fig.cap="True ratings over time for 12 individuals. Vertical bars reflect interactions of that particular individual. The red segments reflect the rank changes. The ratings of individuals not affected by a rank change also fluctuate because the ratings on any given day need to have a mean of 0."}
+par(family = "serif", mgp = c(1.5, 0.4, 0), mar = c(3, 2.6, 1, 1), tcl = -0.2, las = 1, cex.axis = 0.7)
+set.seed(93)
+r <- make_rating_grid(n_ind = 12, n_days = 400, start_sd = 1.9, drifts = 6)
+x <- principled_interactions(rating_grid = r, n_int = 300)
+plot_principled(rating_grid = r, idata = x)
+```
+
+Now let's do the estimation:
+
+```{r princi_compu, cache=TRUE}
+d <- prep_seq(winner = x$idata$winner, loser = x$idata$loser, 
+               Date = x$idata$date, estimate_startspread = TRUE)
+res <- elo_seq_bayes(d, parallel_chains = 4, seed = 27, quiet = TRUE)
+summary(res)
+```
+
+
+```{r princicompupp, fig.width=6, fig.height=3, out.width="60%", echo=2:50, fig.align='center', fig.cap="Posterior predictive checks."}
+par(family = "serif", mgp = c(1.5, 0.4, 0), mar = c(3, 2.6, 1, 1), tcl = -0.2, las = 1, cex.axis = 0.7)
+pp_check(res)
+```
+
+```{r princicompupp2, fig.width=6, fig.height=3, out.width="60%", echo=2:50, fig.align='center', fig.cap="Trace plots"}
+par(family = "serif", mgp = c(1.5, 0.4, 0), mar = c(3, 2.6, 1, 1), tcl = -0.2, las = 1, cex.axis = 0.7)
+caterpillar_elo(res)
+```
+
+
+To do: highlight individuals that were affected by rating changes in the simulation.
+
+```{r princicompupp3, fig.width=8, fig.height=4.7, out.width="90%", echo=2:50, fig.align='center', fig.cap="Cross-sectional plot of posterior medians and true ratings."}
+par(family = "serif")
+par(mfrow = c(3, 3), mar = c(2.5, 2.5, 0.5, 0.5), mgp = c(1.3, 0.25, 0), tcl = -0.2, las = 1)
+
+xr <- round(seq(1, nrow(x$rating_grid), length.out = 9))
+d <- rownames(r$ratings_per_day)[xr]
+
+for (i in 1:9) {
+  xx <- extract_elo_b(res, d[i])
+  plot(x$rating_grid[xr[i], xx$id], xx$median, asp = 1,
+       xlab = "true rating", ylab = "estimate (post median)")
+  abline(0, 1, lty = 2)
+  legend("topleft", legend = as.character(d[i]), cex = 0.7, bty = "n")
+}
+```
+
 
 

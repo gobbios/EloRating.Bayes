@@ -53,7 +53,7 @@ summary.bayesianelo <- function(object, ...) {
   if (is.null(spreaddata)) {
     cat("SD for start values was fixed at 1 \n")
   } else {
-    cat("median SD for start values (89% CI): \n")
+    cat("median SD for start values (89% CI): ")
     cat(spreaddata[1, 2], " (", spreaddata[1, 1], " - ", spreaddata[1, 3], ")\n", sep = "")
   }
 
