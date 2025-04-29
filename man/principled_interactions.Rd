@@ -2,36 +2,23 @@
 % Please edit documentation in R/principled_interactions.R
 \name{principled_interactions}
 \alias{principled_interactions}
-\title{generate interaction starting from actual ratings}
+\title{generate dyadic dominance interactions}
 \usage{
-principled_interactions(n_ind = 10, n_int = 100, startspread = 1)
+principled_interactions(rating_grid, n_int = 26)
 }
 \arguments{
-\item{n_ind}{numeric, number of individuals}
+\item{rating_grid}{results from \code{\link{make_rating_grid}}}
 
 \item{n_int}{numeric, number of interactions}
-
-\item{startspread}{numeric, non-negative, SD of start ratings}
 }
 \value{
-a list with two items. First a data frame with interactions and
-second a vector with the start ratings.
+a dataframe
 }
 \description{
-for now, we assume a stable system, i.e. individuals don't change ratings
-(i.e. effectively k=0)
-}
-\details{
-if startspread = 0: internally, this will be change to 0.000001, so that no
-winprob of exactly 50\% can occur. Practically, this doesn't make a
-difference except for the expectation column.
+generate dyadic dominance interactions
 }
 \examples{
-principled_interactions(n_ind = 6, n_int = 20, startspread = 5)
-# most outcomes follow expectation:
-table(principled_interactions(n_ind = 6, n_int = 1000, startspread = 5)[[1]]$expected)
-
-# random outcomes with equal start ratings for everyone
-principled_interactions(n_ind = 6, n_int = 20, startspread = 0)
-table(principled_interactions(n_ind = 6, n_int = 1000, startspread = 0)[[1]]$expected)
+xgrid <- make_rating_grid(n_ind = 7, n_days = 100, drifts = 1)
+idata <- principled_interactions(rating_grid = xgrid, n_int = 27)
+head(idata)
 }
