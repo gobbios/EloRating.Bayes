@@ -90,4 +90,5 @@ extract_elo_b(res, targetdate, keep_absent = FALSE)
 # with full posteriors
 extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3)
 extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3, keep_absent = FALSE)
+
 }

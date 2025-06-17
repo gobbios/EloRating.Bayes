@@ -57,6 +57,16 @@ standat <- prep_seq(winner = x$winner, loser = x$loser, Date = x$Date,
                     intensity = x$intensity)
 res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
 summary(res)
+
+# use pre-defined extract/target dates
+data(adv, package = "EloRating")
+data(advpres, package = "EloRating")
+standat <- prep_seq(winner = adv$winner, loser = adv$loser, Date = adv$Date,
+                    presence = advpres, extract_dates = c("2010-01-01", "2010-01-11", "2010-01-21"))
+res <- elo_seq_bayes(standat = standat, refresh = 0, parallel_chains = 2)
+# and extract summaries at specified dates
+# (currently ignoring presence)
+res$post_summaries
 }
 \references{
 The underlying is Stan code is heavily based on this paper:

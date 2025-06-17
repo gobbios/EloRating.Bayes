@@ -15,6 +15,12 @@
 #' @param estimate_startspread logical, default is \code{FALSE}. Should the SD
 #'          of the start ratings be estimated. At its default, the SD is set to
 #'          1. When the SD is estimated, its prior is \code{exponential(1);}.
+#' @param extract_dates character or Date vector with dates. These ratings on
+#'        these dates are generated in the Stan model and therefore easier
+#'        to access during post processing. They do result in larger objects,
+#'        though. The default is \code{NULL}, i.e., store ratings after the
+#'        first interaction (i.e., not the actual start ratings) and
+#'        ratings after the last interaction ("end of the sequence").
 #' @param home_team,away_team,home_win for sports model
 #'
 #' @importFrom EloRating seqcheck
@@ -37,7 +43,8 @@ prep_seq <- function(winner,
                      presence = NULL,
                      draws = NULL,
                      intensity = NULL,
-                     estimate_startspread = FALSE
+                     estimate_startspread = FALSE,
+                     extract_dates = NULL
                      ) {
 
   if (is.factor(winner)) winner <- as.character(winner)
@@ -107,16 +114,21 @@ prep_seq <- function(winner,
                   intensity_index = intensity_index,
                   presence = presence,
                   idates = xdates,
-                  targetdates = c(1, n_int),
-                  n_extract = 2,
+                  targetdates = find_extract_index(idates = Date,
+                                                   edates = extract_dates),
+                  n_extract = 0,
+                  # default_extract_dates = as.integer(!is.null(extract_dates)),
                   startspread_fixed = 1,
                   startspread_val = 1
                   )
+  standat$n_extract <- length(standat$targetdates)
+
 
   if (estimate_startspread) {
     standat$startspread_val <- numeric(0)
     standat$startspread_fixed <- 0
   }
+
 
   standat
 }
