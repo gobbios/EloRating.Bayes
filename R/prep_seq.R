@@ -122,7 +122,9 @@ prep_seq <- function(winner,
                   startspread_val = 1
                   )
   standat$n_extract <- length(standat$targetdates)
-
+  if (is.null(names(standat$targetdates))) {
+    names(standat$targetdates) <- as.character(extract_dates)
+  }
 
   if (estimate_startspread) {
     standat$startspread_val <- numeric(0)

@@ -14,6 +14,10 @@ dates (of the observed interctions)}
 ratings are to be extracted. Default is \code{NULL}, i.e.,
 extract ratings after first interaction and ratings after
 last interaction date.}
+
+\item{standat}{stan data list}
+
+\item{id}{vector with ids}
 }
 \value{
 a named integer vector
@@ -28,4 +32,8 @@ find_extract_index(idates)
 find_extract_index(idates, edates = "1999-01-01")
 find_extract_index(idates, edates = c("2000-01-09", "2000-04-15"))
 find_extract_index(idates, edates = c("2000-04-09", "2020-04-15"))
+
+data(adv, package = "EloRating")
+standat <- prep_seq(winner = adv$winner, loser = adv$loser, Date = adv$Date)
+find_extract_index2(standat, c("a", "b"))
 }
