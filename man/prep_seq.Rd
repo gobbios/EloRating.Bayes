@@ -13,7 +13,8 @@ prep_seq(
   draws = NULL,
   intensity = NULL,
   estimate_startspread = FALSE,
-  extract_dates = NULL
+  extract_dates = NULL,
+  is_male = NULL
 )
 
 prep_seq_sport(
@@ -53,6 +54,11 @@ to access during post processing. They do result in larger objects,
 though. The default is \code{NULL}, i.e., store ratings after the
 first interaction (i.e., not the actual start ratings) and
 ratings after the last interaction ("end of the sequence").}
+
+\item{is_male}{optional vector of 0 and 1 that encodes whether a individual
+is male. If provided this vector needs to be named and all
+individuals in \code{winner} and \code{loser} need to be included.
+Default is \code{NULL}, i.e. it is ignored.}
 
 \item{home_team, away_team, home_win}{for sports model}
 }

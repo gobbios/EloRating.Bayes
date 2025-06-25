@@ -12,6 +12,10 @@
 #'          for each interaction. Determines how many k values are estimated.
 #'          At its default (\code{NULL}), all interactions are considered of
 #'          the same type/intensity and one k value is estimated.
+#' @param is_male optional vector of 0 and 1 that encodes whether a individual
+#'        is male. If provided this vector needs to be named and all
+#'        individuals in \code{winner} and \code{loser} need to be included.
+#'        Default is \code{NULL}, i.e. it is ignored.
 #' @param estimate_startspread logical, default is \code{FALSE}. Should the SD
 #'          of the start ratings be estimated. At its default, the SD is set to
 #'          1. When the SD is estimated, its prior is \code{exponential(1);}.
@@ -44,7 +48,8 @@ prep_seq <- function(winner,
                      draws = NULL,
                      intensity = NULL,
                      estimate_startspread = FALSE,
-                     extract_dates = NULL
+                     extract_dates = NULL,
+                     is_male = NULL
                      ) {
 
   if (is.factor(winner)) winner <- as.character(winner)
@@ -93,6 +98,16 @@ prep_seq <- function(winner,
   n_ind <- length(all_ids)
   n_int <- length(winner_index)
 
+  # handle sex difference
+  if (!is.null(is_male)) {
+    if (is.null(names(is_male))) stop("'is_male' requires names attribute")
+    if (!all(names(is_male) %in% all_ids)) stop("individuals missing from 'is_male")
+    is_male <- is_male[all_ids]
+  } else {
+    is_male <- numeric(n_ind)
+    names(is_male) <- all_ids
+  }
+
   if (is.null(presence)) {
     presence <- matrix(ncol = n_ind, nrow = n_int, 1)
     colnames(presence) <- all_ids
@@ -113,6 +128,7 @@ prep_seq <- function(winner,
                   draws = draws,
                   intensity_index = intensity_index,
                   presence = presence,
+                  is_male = is_male,
                   idates = xdates,
                   targetdates = find_extract_index(idates = Date,
                                                    edates = extract_dates),
