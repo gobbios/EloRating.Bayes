@@ -13,8 +13,9 @@ prep_seq(
   draws = NULL,
   intensity = NULL,
   estimate_startspread = FALSE,
+  estimate_k = TRUE,
   extract_dates = NULL,
-  is_male = NULL
+  is_female = NULL
 )
 
 prep_seq_sport(
@@ -46,7 +47,11 @@ the same type/intensity and one k value is estimated.}
 
 \item{estimate_startspread}{logical, default is \code{FALSE}. Should the SD
 of the start ratings be estimated. At its default, the SD is set to
-1. When the SD is estimated, its prior is \code{exponential(1);}.}
+1. When the SD is estimated, its prior is \code{exponential(1)}.}
+
+\item{estimate_k}{logical (with default \code{TRUE}). Should \emph{k} be
+estimated, or should it be set to 0 (when \code{FALSE}), which
+effectively makes the system static.}
 
 \item{extract_dates}{character or Date vector with dates. These ratings on
 these dates are generated in the Stan model and therefore easier
@@ -55,8 +60,8 @@ though. The default is \code{NULL}, i.e., store ratings after the
 first interaction (i.e., not the actual start ratings) and
 ratings after the last interaction ("end of the sequence").}
 
-\item{is_male}{optional vector of 0 and 1 that encodes whether a individual
-is male. If provided this vector needs to be named and all
+\item{is_female}{optional vector of 0 and 1 that encodes whether a individual
+is female. If provided this vector needs to be named(!) and all
 individuals in \code{winner} and \code{loser} need to be included.
 Default is \code{NULL}, i.e. it is ignored.}
 

@@ -2,13 +2,14 @@
 % Please edit documentation in R/find_extract_index.R
 \name{find_extract_index}
 \alias{find_extract_index}
+\alias{find_extract_index2}
 \title{index position for extraction dates}
 \usage{
 find_extract_index(idates, edates = NULL)
 }
 \arguments{
 \item{idates}{character or Date vector with interaction
-dates (of the observed interctions)}
+dates (of the observed interactions)}
 
 \item{edates}{character or Date vector of dates for which corresponding
 ratings are to be extracted. Default is \code{NULL}, i.e.,

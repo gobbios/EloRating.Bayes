@@ -7,7 +7,7 @@ vector win_probs_presence_draws(
          int n_ind, // n individuals
          array[] int winner, // winner index
          array[] int loser, // loser index
-         matrix presence, // , // presence matrix
+         matrix presence, // presence matrix
          array[] int draw, // indicator for draws
          array[] int intensity // index for k vector
          ) {

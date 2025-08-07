@@ -12,13 +12,16 @@
 #'          for each interaction. Determines how many k values are estimated.
 #'          At its default (\code{NULL}), all interactions are considered of
 #'          the same type/intensity and one k value is estimated.
-#' @param is_male optional vector of 0 and 1 that encodes whether a individual
-#'        is male. If provided this vector needs to be named and all
+#' @param is_female optional vector of 0 and 1 that encodes whether a individual
+#'        is female. If provided this vector needs to be named(!) and all
 #'        individuals in \code{winner} and \code{loser} need to be included.
 #'        Default is \code{NULL}, i.e. it is ignored.
 #' @param estimate_startspread logical, default is \code{FALSE}. Should the SD
-#'          of the start ratings be estimated. At its default, the SD is set to
-#'          1. When the SD is estimated, its prior is \code{exponential(1);}.
+#'        of the start ratings be estimated. At its default, the SD is set to
+#'        1. When the SD is estimated, its prior is \code{exponential(1)}.
+#' @param estimate_k logical (with default \code{TRUE}). Should \emph{k} be
+#'        estimated, or should it be set to 0 (when \code{FALSE}), which
+#'        effectively makes the system static.
 #' @param extract_dates character or Date vector with dates. These ratings on
 #'        these dates are generated in the Stan model and therefore easier
 #'        to access during post processing. They do result in larger objects,
@@ -48,8 +51,9 @@ prep_seq <- function(winner,
                      draws = NULL,
                      intensity = NULL,
                      estimate_startspread = FALSE,
+                     estimate_k = TRUE,
                      extract_dates = NULL,
-                     is_male = NULL
+                     is_female = NULL
                      ) {
 
   if (is.factor(winner)) winner <- as.character(winner)
@@ -99,13 +103,13 @@ prep_seq <- function(winner,
   n_int <- length(winner_index)
 
   # handle sex difference
-  if (!is.null(is_male)) {
-    if (is.null(names(is_male))) stop("'is_male' requires names attribute")
-    if (!all(names(is_male) %in% all_ids)) stop("individuals missing from 'is_male")
-    is_male <- is_male[all_ids]
+  if (!is.null(is_female)) {
+    if (is.null(names(is_female))) stop("'is_female' requires names attribute")
+    if (!all(names(is_female) %in% all_ids)) stop("individuals missing from 'is_female")
+    is_female <- is_female[all_ids]
   } else {
-    is_male <- numeric(n_ind)
-    names(is_male) <- all_ids
+    is_female <- numeric(n_ind)
+    names(is_female) <- all_ids
   }
 
   if (is.null(presence)) {
@@ -128,7 +132,7 @@ prep_seq <- function(winner,
                   draws = draws,
                   intensity_index = intensity_index,
                   presence = presence,
-                  is_male = is_male,
+                  is_female = is_female,
                   idates = xdates,
                   targetdates = find_extract_index(idates = Date,
                                                    edates = extract_dates),
@@ -146,6 +150,8 @@ prep_seq <- function(winner,
     standat$startspread_val <- numeric(0)
     standat$startspread_fixed <- 0
   }
+
+  standat$estimate_k <- as.integer(estimate_k)
 
 
   standat

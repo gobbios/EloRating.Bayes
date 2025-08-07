@@ -18,6 +18,9 @@ data {
   array[n_extract] int<lower=1> targetdates; // index positions for extraction
 
   // conditional estimation of SD of start values
+  int<lower = 0, upper = 1> estimate_k; // toggle estimation of k (versus using k = 0)
+
+  // conditional estimation of SD of start values
   int<lower = 0, upper = 1> startspread_fixed; // toggle estimation of start SD
   // startspread_val is size 0 if startspread_fixed is FALSE/0
   // otherwise, we hand a value over in the data list
@@ -30,29 +33,50 @@ transformed data {
   for (i in 1:n_int) {
     y[i] = 1;
   }
+
+  // a vector k values with all zeros (only needed if k is not estimated)
+  vector<lower=0>[n_k] zerokvals = rep_vector(0.0, n_k);
 }
 
 parameters {
   vector[n_ind] EloStart;
   // real<lower=0.0> k;
-  vector<lower=0>[n_k] k;
+  // vector<lower=0>[n_k] k_aux;
+
+  vector<lower=0>[estimate_k ? n_k : 0] k_aux;
+
   // startspread_param is size 0 if startspread_fixed is TRUE/1
   array[startspread_fixed ? 0 : 1] real<lower=0> startspread_param;
 }
 
 transformed parameters {
-  // either use data value or estimate
+  // either use data value or estimate for SD of start ratings
   real<lower=0> startspread;
   if (startspread_fixed) {
     startspread = startspread_val[1];
   } else {
     startspread = startspread_param[1];
   }
+  // make k a constant if so desired
+  // vector<lower=0>[n_k] k = estimate_k ? k_aux : zerokvals;
+
+  vector<lower=0>[n_k] k;
+  if (estimate_k) {
+    k = k_aux;
+  } else {
+    k = zerokvals;
+  }
+
 }
 
 model {
-  // elo part
-  k ~ exponential(2);
+  // give k_aux a prior regardless of whether its used in the likelihood
+  // otherwise we get instable sampling (div. transitions etc.)
+  if (estimate_k){
+    k_aux ~ exponential(2);
+  }
+
+
   EloStart ~ normal(0, startspread);
   if (startspread_fixed) {
     startspread ~ exponential(1);

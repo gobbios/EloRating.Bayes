@@ -1,7 +1,7 @@
 #' index position for extraction dates
 #'
 #' @param idates character or Date vector with interaction
-#'        dates (of the observed interctions)
+#'        dates (of the observed interactions)
 #' @param edates character or Date vector of dates for which corresponding
 #'        ratings are to be extracted. Default is \code{NULL}, i.e.,
 #'        extract ratings after first interaction and ratings after
@@ -11,6 +11,7 @@
 #'
 #' @returns a named integer vector
 #' @export
+#' @aliases find_extract_index2
 #'
 #' @examples
 #' idates <- c("2000-01-04", "2000-03-27", "2000-04-01", "2000-04-01", "2000-04-24")
@@ -45,8 +46,8 @@ find_extract_index <- function(idates, edates = NULL) {
 }
 
 #' @export
+#' @inheritParams find_extract_index
 find_extract_index2 <- function(standat, id) {
-  x="a"
   out <- lapply(id, \(x) {
     xl <- which(names(standat$winner_index) == x | names(standat$loser_index) == x)
     data.frame(id = x,
