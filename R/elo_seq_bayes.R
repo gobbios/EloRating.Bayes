@@ -87,7 +87,7 @@ elo_seq_bayes <- function(standat, quiet = FALSE, ...) {
   }
   post <- res$draws(c("EloStart", "out_perdate"), format = "draws_matrix")
   post_summaries <- data.frame(id = rep(colnames(standat$presence),  each = standat$n_extract + 1),
-                               date = rep(c(as.character(as.Date(names(standat$targetdates[1])) - 1),
+                               date = rep(c(as.character(as.Date(names(standat$idates[1])) - 1),
                                             names(standat$targetdates)), standat$n_ind)
                                )
   post_summaries$last_interaction <- last_interaction(test_ids = post_summaries$id,
@@ -96,6 +96,14 @@ elo_seq_bayes <- function(standat, quiet = FALSE, ...) {
                                                       winner = names(standat$winner_index),
                                                       loser = names(standat$loser_index))
   post_summaries$is_start <- rep(c(TRUE, rep(FALSE, standat$n_extract)), standat$n_ind)
+
+  # reorder columns in post to match post_summaries
+  xcolorder <- sapply(seq_len(standat$n_ind), \(x){
+    c(x, grep( paste0(",", x, "]"), colnames(post)))
+  }, simplify = FALSE)
+  xcol <- unlist(xcolorder)
+  post <- post[, xcol]
+
   post_summaries$mean <- colMeans(post)
   post_summaries$median <- apply(post, 2, median)
   post_summaries$sd <- apply(post, 2, sd)
