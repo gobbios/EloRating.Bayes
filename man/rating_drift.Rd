@@ -12,7 +12,7 @@ rating_drift(from, rat_delta, t0, t_delta = 30, k = 2, sel_id = 0)
 \item{rat_delta}{numeric, change magnitude (positive = rating increase,
 negative = rating decrease)}
 
-\item{t0}{integer, start day}
+\item{t0}{integer, start day (relative to some existing date sequence)}
 
 \item{t_delta}{integer (default is \code{30}), duration of the drift}
 

@@ -203,7 +203,7 @@ make_rating_grid <- function(n_ind = 10,
 #' @param from numeric, rating from which the drift starts
 #' @param rat_delta numeric, change magnitude (positive = rating increase,
 #'          negative = rating decrease)
-#' @param t0 integer, start day
+#' @param t0 integer, start day (relative to some existing date sequence)
 #' @param t_delta integer (default is \code{30}), duration of the drift
 #' @param k numeric, steepness of the slope (default is \code{2})
 #' @param sel_id numeric, placeholder for individual (to be put in the output).

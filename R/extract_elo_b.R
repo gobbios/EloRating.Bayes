@@ -179,7 +179,7 @@ extract_elo_b <- function(res,
       if (length(targetdate) >= 2 && !point_presence && x >= 2) {
         # aux[,"KirikuSouth"]
         # smallpmat[i, ] <- as.numeric(colSums(presence[tdates[i] : tdates[i - 1], ]) > 0)
-        aux[, which(as.numeric(colSums(presence[tdates[x] : tdates[x - 1], ]) > 0) == 0)] <- NA
+        aux[, which(as.numeric(colSums(presence[tdates[x] : tdates[x - 1], , drop = FALSE]) > 0) == 0)] <- NA
       } else {
         aux[, which(presence[tdates[x], ] == 0)] <- NA
       }
