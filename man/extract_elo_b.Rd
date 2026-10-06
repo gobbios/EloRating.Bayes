@@ -20,7 +20,9 @@ extract_elo_b(
 \item{targetdate}{vector of target dates (date format: YYYY-MM-DD). At its
 default (\code{NULL}), the date of the last observed
 interaction is used. If set to \code{0}, the start ratings
-are returned.}
+are returned. There is an experimental option, in which
+a data.frame can be supplied with custom combinations
+of dates and IDs (see details).}
 
 \item{make_summary}{logical, provide summary, or if \code{FALSE}: provide
 posterior draws}
@@ -63,6 +65,11 @@ presence data was supplied to \code{\link{prep_seq}} in the first place.
 If \code{keep_absent = FALSE}, absent individuals are entirely removed
 from the output. If \code{keep_absent = TRUE}, these individuals will
 be present in the output, but all their values will be set to \code{NA}.
+
+You can supply a data.frame to \code{targetdate}. In this case, the
+data.frame requires a column \code{$targetdate} and a column
+\code{$id} to indicate date and id to be returned.
+This only works when \code{make_summary=TRUE}.
 }
 \examples{
 library(EloRating)
@@ -91,4 +98,9 @@ extract_elo_b(res, targetdate, keep_absent = FALSE)
 extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3)
 extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3, keep_absent = FALSE)
 
+# using a data.frame with specific date/id combos
+targetdate <- data.frame(targetdate = c("2010-01-22", "2010-01-22",
+                                        "2010-01-02", "2010-01-11"),
+                         id = c("a", "b", "a", "c"))
+extract_elo_b(res, targetdate = targetdate, make_summary = TRUE)
 }

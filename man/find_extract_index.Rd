@@ -6,6 +6,8 @@
 \title{index position for extraction dates}
 \usage{
 find_extract_index(idates, edates = NULL)
+
+find_extract_index2(standat, id)
 }
 \arguments{
 \item{idates}{character or Date vector with interaction

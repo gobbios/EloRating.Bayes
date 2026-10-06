@@ -246,6 +246,19 @@ lapply(rats, colMeans)
 ```
 
 
+Since version 0.25.0 there is an experimental means to extract ratings for 'custom' combinations of dates and ids, which might provide a bit more convenience, and maybe some speed advantage.
+For this, we need to supply a data frame that encodes the combinations of dates and ids, like:
+
+```{r}
+customdates <- data.frame(targetdate = c("2000-02-08", "2000-01-30", "2000-01-30"), 
+                          id = c("v", "e", "s"))
+extract_elo_b(res, targetdate = customdates)
+```
+
+The important thing is to remember to name the columns exactly `$targetdate` and `$id`.
+
+
+\clearpage
 
 Visually.
 

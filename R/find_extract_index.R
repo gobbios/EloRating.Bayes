@@ -45,8 +45,8 @@ find_extract_index <- function(idates, edates = NULL) {
   sapply(edates, \(x)max(which(idates <= x)))
 }
 
+#' @rdname find_extract_index
 #' @export
-#' @inheritParams find_extract_index
 find_extract_index2 <- function(standat, id) {
   out <- lapply(id, \(x) {
     xl <- which(names(standat$winner_index) == x | names(standat$loser_index) == x)

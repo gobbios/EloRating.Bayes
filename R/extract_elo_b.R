@@ -4,7 +4,9 @@
 #' @param targetdate vector of target dates (date format: YYYY-MM-DD). At its
 #'                   default (\code{NULL}), the date of the last observed
 #'                   interaction is used. If set to \code{0}, the start ratings
-#'                   are returned.
+#'                   are returned. There is an experimental option, in which
+#'                   a data.frame can be supplied with custom combinations
+#'                   of dates and IDs (see details).
 #' @param make_summary logical, provide summary, or if \code{FALSE}: provide
 #'                posterior draws
 #' @param quiet logical, default is \code{TRUE}: try to capture all output that
@@ -33,6 +35,11 @@
 #'   If \code{keep_absent = FALSE}, absent individuals are entirely removed
 #'   from the output. If \code{keep_absent = TRUE}, these individuals will
 #'   be present in the output, but all their values will be set to \code{NA}.
+#'
+#' You can supply a data.frame to \code{targetdate}. In this case, the
+#'   data.frame requires a column \code{$targetdate} and a column
+#'   \code{$id} to indicate date and id to be returned.
+#'   This only works when \code{make_summary=TRUE}.
 #'
 #' @return if \code{make_summary=TRUE}: a data frame; otherwise a list of
 #'         matrices in which each matrix represent individuals in columns and
@@ -70,6 +77,13 @@
 #' extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3)
 #' extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3, keep_absent = FALSE)
 #'
+#' # using a data.frame with specific date/id combos
+#' targetdate <- data.frame(targetdate = c("2010-01-22", "2010-01-22",
+#'                                         "2010-01-02", "2010-01-11"),
+#'                          id = c("a", "b", "a", "c"))
+#' extract_elo_b(res, targetdate = targetdate, make_summary = TRUE)
+
+
 
 
 # targetdate = NULL; make_summary = TRUE; quiet = TRUE; sel_draws = NULL; keep_absent = TRUE; point_presence = TRUE
@@ -81,6 +95,20 @@ extract_elo_b <- function(res,
                           keep_absent = TRUE,
                           point_presence = TRUE
                           ) {
+
+  usedf <- FALSE # flag for data.frame approach
+  if (is.data.frame(targetdate)) {
+    if (!"targetdate" %in% colnames(targetdate)) {
+      if (!"id" %in% colnames(targetdate)) {
+        stop("if targetdate is a data.frame, we need columns 'targetdate' AND 'id' in the data.frame")
+      }
+    }
+
+    targetdate_copy <- targetdate
+    targetdate <- unique(targetdate$targetdate)
+    usedf <- TRUE
+  }
+
 
   if (is.null(targetdate)) {
     targetdate <- max(as.Date(names(res$standat$idates)))
@@ -161,6 +189,17 @@ extract_elo_b <- function(res,
     out$cumints <- sapply(seq_len(nrow(out)),
                           \(i) res$standat$n_mat[as.character(out$date[i]), out$id[i]] )
 
+
+    if (usedf) {
+      targetdate_copy
+      out$keep <- FALSE
+      for (i in seq_len(nrow(targetdate_copy))) {
+        present <- out$id == targetdate_copy$id[i] & out$date == targetdate_copy$targetdate[i]
+        if (sum(present) == 1) out$keep[which(present)] <- TRUE
+      }
+      out <- out[out$keep, ]
+      out$keep <- NULL
+    }
   }
 
   if (!make_summary) {
@@ -215,6 +254,7 @@ extract_elo_b <- function(res,
     }
 
     names(out) <- as.character(xdates)
+
   }
 
   out
