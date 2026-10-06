@@ -41,7 +41,7 @@
 # loser <- x$seqdat$loser
 # Date <- x$seqdat$Date
 # presence <- x$pres
-
+# draws = NULL; intensity = NULL; estimate_startspread = FALSE; estimate_k = TRUE; extract_dates = NULL; is_female = NULL
 
 #' @export
 prep_seq <- function(winner,
@@ -119,6 +119,25 @@ prep_seq <- function(winner,
     presence <- as.matrix(presence[, all_ids])
   }
 
+  # interaction matrix cumulative
+  # per DATE (not per interaction)
+  n_Dates <- seq.Date(from = as.Date(Date[1]), to = as.Date(Date[length(Date)]), by = "day")
+  n_mat <- matrix(ncol = n_ind, nrow = length(n_Dates), 0)
+  colnames(n_mat) <- all_ids
+  for (r in seq_along(Date)) {
+    # r=1
+    xline <- which(n_Dates == Date[r])
+    n_mat[xline, winner[r]] <- max(n_mat[, winner[r]], na.rm = TRUE) + 1
+    n_mat[xline, loser[r]] <- max(n_mat[, loser[r]], na.rm = TRUE) + 1
+    rm(xline)
+  }
+  # fill zero vals
+  for (i in seq_len(nrow(n_mat))[-1]) {
+    keep <- n_mat[i, ] > 0
+    n_mat[i, !keep] <- n_mat[i - 1, !keep]
+  }
+  rownames(n_mat) <- as.character(n_Dates)
+
   # make dates to be included in standata
   # workaround using a named vector of zeros
   xdates <- rep(0, n_int)
@@ -132,6 +151,7 @@ prep_seq <- function(winner,
                   draws = draws,
                   intensity_index = intensity_index,
                   presence = presence,
+                  n_mat = n_mat,
                   is_female = is_female,
                   idates = xdates,
                   targetdates = find_extract_index(idates = Date,

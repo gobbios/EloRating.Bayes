@@ -47,7 +47,9 @@ the same type/intensity and one k value is estimated.}
 
 \item{estimate_startspread}{logical, default is \code{FALSE}. Should the SD
 of the start ratings be estimated. At its default, the SD is set to
-1. When the SD is estimated, its prior is \code{exponential(1)}.}
+\enumerate{
+\item When the SD is estimated, its prior is \code{exponential(1)}.
+}}
 
 \item{estimate_k}{logical (with default \code{TRUE}). Should \emph{k} be
 estimated, or should it be set to 0 (when \code{FALSE}), which

@@ -71,6 +71,8 @@
 #' extract_elo_b(res, targetdate, make_summary = FALSE, sel_draws = 3, keep_absent = FALSE)
 #'
 
+
+# targetdate = NULL; make_summary = TRUE; quiet = TRUE; sel_draws = NULL; keep_absent = TRUE; point_presence = TRUE
 extract_elo_b <- function(res,
                           targetdate = NULL,
                           make_summary = TRUE,
@@ -121,7 +123,7 @@ extract_elo_b <- function(res,
 
   if (make_summary) {
     out <- as.data.frame(gq$summary(variables = "out_perdate"))
-    out <- data.frame(id = out$variable, date = NA, present = FALSE, out[, -1], check.names = FALSE)
+    out <- data.frame(id = out$variable, date = NA, cumints = NA, present = FALSE, out[, -1], check.names = FALSE)
 
     vars <- out$id
     vars <- gsub("out_perdate[", "", vars, fixed = TRUE)
@@ -154,6 +156,10 @@ extract_elo_b <- function(res,
         out[i, which(!colnames(out) %in% c("id", "date", "present"))] <- NA
       }
     }
+
+    # cumulative interactions
+    out$cumints <- sapply(seq_len(nrow(out)),
+                          \(i) res$standat$n_mat[as.character(out$date[i]), out$id[i]] )
 
   }
 

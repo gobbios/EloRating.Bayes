@@ -29,38 +29,50 @@ export(principled_interactions)
 export(rating_drift)
 export(sim_group_split)
 export(toydata)
-importFrom(EloRating,randomsequence)
-importFrom(EloRating,seqcheck)
+importFrom(EloRating,
+  randomsequence,
+  seqcheck
+)
 importFrom(Rdpack,reprompt)
-importFrom(cmdstanr,cmdstan_model)
-importFrom(cmdstanr,draws_to_csv)
-importFrom(grDevices,gray.colors)
-importFrom(grDevices,grey)
-importFrom(grDevices,hcl.colors)
-importFrom(graphics,abline)
-importFrom(graphics,arrows)
-importFrom(graphics,axis)
-importFrom(graphics,axis.Date)
-importFrom(graphics,box)
-importFrom(graphics,legend)
-importFrom(graphics,mtext)
-importFrom(graphics,par)
-importFrom(graphics,points)
-importFrom(graphics,polygon)
-importFrom(graphics,segments)
-importFrom(graphics,text)
-importFrom(graphics,title)
+importFrom(cmdstanr,
+  cmdstan_model,
+  draws_to_csv
+)
+importFrom(grDevices,
+  gray.colors,
+  grey,
+  hcl.colors
+)
+importFrom(graphics,
+  abline,
+  arrows,
+  axis,
+  axis.Date,
+  box,
+  legend,
+  mtext,
+  par,
+  points,
+  polygon,
+  segments,
+  text,
+  title
+)
 importFrom(posterior,as_draws_matrix)
-importFrom(stats,coef)
-importFrom(stats,density)
-importFrom(stats,lm)
-importFrom(stats,median)
-importFrom(stats,na.omit)
-importFrom(stats,plogis)
-importFrom(stats,quantile)
-importFrom(stats,rbinom)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,sd)
-importFrom(utils,capture.output)
-importFrom(utils,combn)
+importFrom(stats,
+  coef,
+  density,
+  lm,
+  median,
+  na.omit,
+  plogis,
+  quantile,
+  rbinom,
+  rnorm,
+  runif,
+  sd
+)
+importFrom(utils,
+  capture.output,
+  combn
+)
