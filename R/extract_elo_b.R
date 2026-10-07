@@ -106,6 +106,7 @@ extract_elo_b <- function(res,
 
     targetdate_copy <- targetdate
     targetdate <- unique(targetdate$targetdate)
+    targetdate <- na.omit(targetdate)
     usedf <- TRUE
   }
 
@@ -194,8 +195,11 @@ extract_elo_b <- function(res,
       targetdate_copy
       out$keep <- FALSE
       for (i in seq_len(nrow(targetdate_copy))) {
-        present <- out$id == targetdate_copy$id[i] & out$date == targetdate_copy$targetdate[i]
-        if (sum(present) == 1) out$keep[which(present)] <- TRUE
+        if (!is.na(targetdate_copy$targetdate[i])) {
+          present <- out$id == targetdate_copy$id[i] & out$date == targetdate_copy$targetdate[i]
+          if (sum(present) == 1) out$keep[which(present)] <- TRUE
+        }
+        # what's supposed to happen if targetdate is NA? we could add a blank line, which is obv. not ideal
       }
       out <- out[out$keep, ]
       out$keep <- NULL
